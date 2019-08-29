@@ -10,12 +10,12 @@ public class UserBusinessServiceImpl implements UserBusinessService {
     @Autowired
     private UserAccessService userAccessService;
 
-    public boolean createNewUser(User user)
+    public boolean createNewUser(String name, String password)
     {
-        return userAccessService.addUser(user);
+        return userAccessService.addUser(new User(name, password));
     }
-    public boolean userLogin(User user)
+    public boolean userLogin(String name, String password)
     {
-        return userAccessService.login(user);
+        return userAccessService.login(new User(name, password));
     }
 }

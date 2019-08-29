@@ -1,11 +1,8 @@
 package com.accenture.flowershop.fe.servlets;
 
 import com.accenture.flowershop.be.business.UserBusinessService;
-import com.accenture.flowershop.be.entity.user.User;
-import com.accenture.flowershop.be.entity.user.UserImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +11,11 @@ import java.io.IOException;
 
 @WebServlet(urlPatterns = "/loginServlet")
 public class LoginServlet extends HttpServlet {
+
+    private static final String ADMIN="admin";
     @Autowired
     private UserBusinessService userBusinessService;
+
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
@@ -24,13 +24,13 @@ public class LoginServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        User user=new UserImpl(request.getParameter("username"),
-                request.getParameter("password"));
-        if(userBusinessService.userLogin(user)) {
-            //HttpSession session = request.getSession();
-            //session.setAttribute("username", request.getParameter("username"));
-           // session.setMaxInactiveInterval(30*60);
-            request.getRequestDispatcher("/userPage.jsp").forward(request, response);
+        String username=request.getParameter("username");
+        String password=request.getParameter("password");
+        if(userBusinessService.userLogin(username, password)) {
+            if(username.equals(ADMIN))
+                request.getRequestDispatcher("/adminPage.jsp").forward(request, response);
+            else
+                request.getRequestDispatcher("/userPage.jsp").forward(request, response);
         }
         else {
             request.setAttribute("message","Invalid username or password entered!");

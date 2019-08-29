@@ -21,18 +21,6 @@
     <servlet-name>RegisterForm</servlet-name>
     <jsp-file>/registerForm.jsp</jsp-file>
   </servlet>
-  <!--<servlet>
-    <servlet-name>LoginFormServlet</servlet-name>
-    <servlet-class>com.accenture.flowershop.fe.servlets.LoginFormServlet</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>LoginServlet</servlet-name>
-    <servlet-class>com.accenture.flowershop.fe.servlets.LoginServlet</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>RegisterServlet</servlet-name>
-    <servlet-class>com.accenture.flowershop.fe.servlets.RegisterServlet</servlet-class>
-  </servlet>-->
   <servlet-mapping>
     <servlet-name>LoginForm</servlet-name>
     <url-pattern>/loginForm</url-pattern>
@@ -41,17 +29,5 @@
     <servlet-name>RegisterForm</servlet-name>
     <url-pattern>/registerForm</url-pattern>
   </servlet-mapping>
-  <!--<servlet-mapping>
-    <servlet-name>LoginFormServlet</servlet-name>
-    <url-pattern>/loginFormServlet</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>LoginServlet</servlet-name>
-    <url-pattern>/loginServlet</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>RegisterServlet</servlet-name>
-    <url-pattern>/registerServlet</url-pattern>
-  </servlet-mapping>-->
 </web-app>
 
