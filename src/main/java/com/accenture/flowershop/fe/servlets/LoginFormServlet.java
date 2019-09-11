@@ -11,4 +11,8 @@ public class LoginFormServlet extends HttpServlet {
             throws IOException, ServletException {
         request.getRequestDispatcher("/loginForm.jsp").forward(request, response);
     }
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        doGet(request,response);
+    }
 }

@@ -1,9 +1,11 @@
 package com.accenture.flowershop.be.entity.user;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity(name = "User")
-@Table(name = "USERS")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table(name = "users")
 public class User {
     @Id
     @Column(name="login")
@@ -25,33 +27,12 @@ public class User {
         return password;
     }
 
-    @Override
-    public String toString() {
-        return "Username: " + login +
-                " Password: " + password;
-    }
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + login.hashCode();
-        result = prime * result + password.hashCode();
-        return result;
+    public boolean isAdmin() {
+        return getClass() == User.class;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        User userObj = (User) obj;
-        if (!login.equals(userObj.getLogin()))
-            return false;
-        if (!password.equals(userObj.getPassword()))
-            return false;
-        return true;
+    public String toString() {
+        return "Username: " + login;
     }
 }
