@@ -1,7 +1,8 @@
 package com.accenture.flowershop.be.business.cart;
 
 import com.accenture.flowershop.fe.dto.CartDTO;
-import java.math.BigDecimal;
+import com.accenture.flowershop.fe.dto.UserDTO;
+
 import java.util.List;
 
 /**
@@ -12,18 +13,12 @@ public interface CartBusinessService {
     /**
      * Метод для добавления строки в корзину пользователя
      * @param id - идентификатор цветка, который необходимо добавить в корзину
-     * @param quantity - количество добавляемый цветков данного вида
+     * @param availableQuantity - доступное количество цветов
+     * @param quantity - количество добавляемых цветков данного вида
      * @param login - login пользователя, в корзину которого добавляется элемент
-     * @return суммарную текущую стоимость товаров в корзине
+     * @return булево значение, указываюшее была ли добавлена строка в корзину
      */
-    BigDecimal addToCart(Long id, int quantity, String login);
-
-    /**
-     * Метод для получения списка DTO корзины определенного заказа
-     * @param orderId - идентификатор заказа, элементы которого требуются
-     * @return список DTO корзины
-     */
-    List<CartDTO> getCartByOrderId(Long orderId);
+    boolean addToCart(Long id, int availableQuantity, int quantity, String login);
 
     /**
      * Метод для получения списка DTO корзины определенного пользователя
@@ -34,7 +29,7 @@ public interface CartBusinessService {
 
     /**
      * Метод для очистки корзины пользователя
-     * @param login- login пользователя, корзину которого необходимо очистить
+     * @param login - login пользователя, корзину которого необходимо очистить
      */
     void clearCart(String login);
 }

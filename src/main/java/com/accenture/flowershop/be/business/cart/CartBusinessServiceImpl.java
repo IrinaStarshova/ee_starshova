@@ -17,39 +17,36 @@ public class CartBusinessServiceImpl implements CartBusinessService {
     private FlowerAccessService flowerAccessService;
     @Autowired
     private CartAccessService cartAccessService;
-
+    @Autowired
+    private UserAccessService userAccessService;
     @Override
-    public BigDecimal addToCart(Long id, int quantity, String login) {
-        Flower flower = flowerAccessService.getFlower(id);
-        if(flower.getQuantity()-flower.getQuantityInCart() < quantity)
-            return null;
+    public boolean addToCart(Long id, int availableQuantity, int quantity, String login) {
+        if(availableQuantity < quantity)
+            return false;
+        Flower flower=flowerAccessService.setQuantityInCart(id,quantity);
         Cart cart=new Cart(flower.getId(), flower.getName(), quantity,
                 flower.getPrice().multiply(new BigDecimal(quantity)));
-        flower.setQuantityInCart(flower.getQuantityInCart() + quantity);
-        flowerAccessService.updateFlower(flower);
-        return cartAccessService.addCartItem(cart,login);
-    }
-
-    @Override
-    public List<CartDTO> getCartByOrderId(Long orderId) {
-        List<CartDTO> cartDTOs=new ArrayList<>();
-        for(Cart cart:cartAccessService.getCarts(orderId))
-            cartDTOs.add(new CartDTO(cart.getId(),cart.getFlowerName(),
-                    cart.getQuantity(),cart.getTotalPrice()));
-        return cartDTOs;
+        cartAccessService.addCartItem(cart,login);
+        return true;
     }
 
     @Override
     public List<CartDTO> getCart(String login) {
-        List<CartDTO> cartDTOs=new ArrayList<>();
-        for(Cart cart:cartAccessService.getCarts(login))
-            cartDTOs.add(new CartDTO(cart.getId(),cart.getFlowerName(),
-                    cart.getQuantity(),cart.getTotalPrice()));
-        return cartDTOs;
+        return cartToCartDTO(cartAccessService.getCarts(login));
     }
+
 
     @Override
     public void clearCart(String login) {
         cartAccessService.clearCart(login);
+        userAccessService.changeCartCost(login);
+    }
+
+    private List<CartDTO> cartToCartDTO(List<Cart> cartList){
+        List<CartDTO> cartDTOs=new ArrayList<>();
+        for(Cart cart:cartList)
+            cartDTOs.add(new CartDTO(cart.getId(),cart.getFlowerName(),
+                    cart.getQuantity(),cart.getTotalPrice()));
+        return cartDTOs;
     }
 }

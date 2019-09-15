@@ -13,4 +13,13 @@ public interface FlowerBusinessService {
      * @return список DTO цветов
      */
     List<FlowerDTO> getFlowers();
+
+    /**
+     * Метод для поиска цветов по имени и диапазону цен
+     * @param name - имя или часть имени цветка
+     * @param priceFrom - нижняя граница диапазона цены
+     * @param priceTo - верхняя граница диапазона цены
+     * @return список найденных цветов
+     */
+    List<FlowerDTO> findFlowers(String name, String priceFrom, String priceTo);
 }

@@ -1,6 +1,5 @@
 package com.accenture.flowershop.be.access.user;
 
-import com.accenture.flowershop.be.entity.order.Order;
 import com.accenture.flowershop.be.entity.user.Customer;
 import com.accenture.flowershop.be.entity.user.User;
 import org.slf4j.*;
@@ -19,13 +18,6 @@ public class UserAccessServiceImpl implements UserAccessService {
     private EntityManager entityManager;
     private static final Logger LOG = 	LoggerFactory.getLogger(UserAccessService.class);
 
-    public User findUser(String login, String password) {
-        User foundUser=entityManager.find(User.class,login);
-        if((foundUser != null) && foundUser.getPassword().equals(password))
-            return foundUser;
-        return null;
-    }
-
     @Override
     @Transactional
     public User getUser(String login) {
@@ -43,5 +35,12 @@ public class UserAccessServiceImpl implements UserAccessService {
     @Transactional
     public void updateCustomer(Customer customer){
         entityManager.merge(customer);
+    }
+
+    @Override
+    @Transactional
+    public void changeCartCost(String login){
+        Customer customer=(Customer)getUser(login);
+        customer.setCartCost(BigDecimal.ZERO);
     }
 }

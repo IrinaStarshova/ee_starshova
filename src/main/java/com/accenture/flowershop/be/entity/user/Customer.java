@@ -2,7 +2,6 @@ package com.accenture.flowershop.be.entity.user;
 
 import com.accenture.flowershop.be.entity.cart.Cart;
 import com.accenture.flowershop.be.entity.order.Order;
-import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -11,8 +10,8 @@ import java.util.List;
 @Entity(name = "Customer")
 @Table(name = "customers")
 public class Customer extends User {
-    private static final BigDecimal BALANCE=new BigDecimal(2000);
-    private static final int DISCOUNT=3;
+    public static final BigDecimal BALANCE=new BigDecimal(2000);
+    public static final int DISCOUNT=3;
     @Column(name="firstName")
     private String firstName;
 
@@ -42,23 +41,22 @@ public class Customer extends User {
     private List<Cart> carts;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userLogin")
+    @JoinColumn(name = "login")
     private List<Order> orders;
 
     public Customer(){}
     public Customer(String login, String password, String firstName,
              String patronymic, String lastName, String address,
-             String phoneNumber){
+             String phoneNumber, BigDecimal balance, int discount){
         super(login,password);
         this.firstName=firstName;
         this.patronymic=patronymic;
         this.lastName=lastName;
         this.address=address;
         this.phoneNumber=phoneNumber;
-        this.balance=BALANCE;
-        this.discount=DISCOUNT;
+        this.balance=balance;
+        this.discount=discount;
     }
-
 
     public void addCart(Cart cart){
         Cart findCart=findByFlowerName(cart.getFlowerName());
@@ -78,22 +76,12 @@ public class Customer extends User {
         return null;
     }
 
-    public List<Cart> getCarts() {
-        Hibernate.initialize(carts);
-        return carts;
-    }
-
     public void clearCart(){
         carts.clear();
     }
 
     public void addOrder(Order order){
         orders.add(order);
-    }
-
-    public List<Order> getOrders() {
-        Hibernate.initialize(orders);
-        return orders;
     }
 
     public String getFirstName() {
@@ -135,8 +123,8 @@ public class Customer extends User {
     public void setCartCost(BigDecimal cartCost) {
         this.cartCost = cartCost;
     }
-    public void setCartCostWithDiscount(BigDecimal totalPrice) {
 
+    public void setCartCostWithDiscount(BigDecimal totalPrice) {
         cartCost = (cartCost.add(totalPrice
                 .multiply(new BigDecimal((100.00-discount)/100.00))))
                 .setScale(2, RoundingMode.CEILING);

@@ -8,7 +8,7 @@ create sequence orders_seq;
 	creationDate date not null,
 	closingDate date,
 	status varchar(10) not null,
-	userLogin varchar(10)
+	login varchar(10)
     );
 
 --------------------------------------------------------

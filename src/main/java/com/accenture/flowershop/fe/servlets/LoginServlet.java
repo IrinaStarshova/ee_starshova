@@ -18,8 +18,6 @@ public class LoginServlet extends HttpServlet {
     @Autowired
     private OrderBusinessService orderBusinessService;
     @Autowired
-    private CartBusinessService cartBusinessService;
-    @Autowired
     private UserBusinessService userBusinessService;
     @Autowired
     private FlowerBusinessService flowerBusinessService;
@@ -38,14 +36,14 @@ public class LoginServlet extends HttpServlet {
         if(user!=null) {
             HttpSession session=request.getSession();
             session.setMaxInactiveInterval(20*60);
-            session.setAttribute("orders",orderBusinessService);
-            session.setAttribute("cart", cartBusinessService);
-            if(user.isAdmin())
+            if(user.isAdmin()) {
+                session.setAttribute("orders", orderBusinessService.getOrders());
                 request.getRequestDispatcher("/adminPage.jsp").forward(request, response);
+            }
             else {
-
                 session.setAttribute("user",user);
-                session.setAttribute("flowers",flowerBusinessService);
+                session.setAttribute("flowers",flowerBusinessService.getFlowers());
+                session.setAttribute("orders", orderBusinessService.getOrders(user.getLogin()));
                 request.getRequestDispatcher("/userPage.jsp").forward(request, response);
             }
         }

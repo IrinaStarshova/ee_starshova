@@ -1,6 +1,8 @@
 package com.accenture.flowershop.fe.servlets;
 
+import com.accenture.flowershop.be.business.cart.CartBusinessService;
 import com.accenture.flowershop.be.business.order.OrderBusinessService;
+import com.accenture.flowershop.be.business.user.UserBusinessService;
 import com.accenture.flowershop.fe.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -14,6 +16,9 @@ public class OrderServlet extends HttpServlet {
 
     @Autowired
     private OrderBusinessService orderBusinessService;
+    @Autowired
+    private UserBusinessService userBusinessService;
+
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
@@ -27,11 +32,17 @@ public class OrderServlet extends HttpServlet {
         if(session==null)
             request.getRequestDispatcher("/loginFormServlet").forward(request, response);
         else {
-            UserDTO user = (UserDTO)session.getAttribute("user");
-            if (!orderBusinessService.createNewOrder(user)) {
+            String login = ((UserDTO)session.getAttribute("user")).getLogin();
+            if (!orderBusinessService.createNewOrder(login)) {
                 request.setAttribute("orderMessage", "Cart is empty!");
             }
-            request.getRequestDispatcher("/userPage.jsp").include(request, response);
+            else {
+
+                session.setAttribute("user", userBusinessService.getUser(login));
+                session.setAttribute("cart", null);
+                session.setAttribute("orders", orderBusinessService.getOrders(login));
+            }
+            request.getRequestDispatcher("/userPage.jsp").forward(request, response);
         }
     }
 }

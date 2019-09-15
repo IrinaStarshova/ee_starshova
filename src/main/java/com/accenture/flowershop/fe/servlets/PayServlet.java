@@ -1,5 +1,6 @@
 package com.accenture.flowershop.fe.servlets;
 
+import com.accenture.flowershop.be.business.order.OrderBusinessService;
 import com.accenture.flowershop.be.business.user.UserBusinessService;
 import com.accenture.flowershop.fe.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,8 @@ public class PayServlet extends HttpServlet {
 
     @Autowired
     private UserBusinessService userBusinessService;
-
+    @Autowired
+    private OrderBusinessService orderBusinessService;
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
@@ -34,7 +36,10 @@ public class PayServlet extends HttpServlet {
                 request.setAttribute("payMessage",
                         "Order payment error. Pay attention to the current balance!");
             }
-            session.setAttribute("user", userBusinessService.getUser(login));
+            else {
+                session.setAttribute("user", userBusinessService.getUser(login));
+                session.setAttribute("orders", orderBusinessService.getOrders(login));
+            }
             request.getRequestDispatcher("/userPage.jsp").forward(request, response);
         }
     }

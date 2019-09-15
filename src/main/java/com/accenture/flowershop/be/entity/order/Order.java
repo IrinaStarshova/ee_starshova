@@ -1,6 +1,7 @@
 package com.accenture.flowershop.be.entity.order;
 
 import com.accenture.flowershop.be.entity.cart.Cart;
+import com.accenture.flowershop.fe.enums.order.OrderStatuses;
 import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -28,14 +29,18 @@ public class Order {
     private Date closingDate;
 
     @Column(name="status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatuses status;
+
+    @Column(name="login")
+    private String login;
 
     @OneToMany(cascade = CascadeType.MERGE)
     @JoinColumn(name = "orderId")
     private List<Cart> carts=new ArrayList<>();
 
     public Order(){}
-    public Order(Date creationDate, String status) {
+    public Order(Date creationDate, OrderStatuses status) {
         this.creationDate=creationDate;
         this.status=status;
     }
@@ -48,10 +53,6 @@ public class Order {
         this.carts = carts;
     }
 
-    public List<Cart> getCarts() {
-        Hibernate.initialize(carts);
-        return carts;
-    }
     public Long getId() {
         return id;
     }
@@ -76,11 +77,11 @@ public class Order {
         this.closingDate = closingDate;
     }
 
-    public String getStatus() {
+    public OrderStatuses getStatus() {
         return status;
     }
 
-    public void setStatus(String status){ this.status=status;}
+    public void setStatus(OrderStatuses status){ this.status=status;}
 
     @Override
     public String toString() {

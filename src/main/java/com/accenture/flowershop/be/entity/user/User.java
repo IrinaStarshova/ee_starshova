@@ -1,7 +1,6 @@
 package com.accenture.flowershop.be.entity.user;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity(name = "User")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -14,6 +13,7 @@ public class User {
     private String password;
 
     public User(){}
+
     public User(String name, String password) {
         this.login =name;
         this.password=password;

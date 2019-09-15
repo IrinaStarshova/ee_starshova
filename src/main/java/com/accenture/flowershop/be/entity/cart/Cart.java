@@ -25,6 +25,12 @@ public class Cart {
     @Column(name="totalPrice")
     private BigDecimal totalPrice;
 
+    @Column(name="login")
+    private String login;
+
+    @Column(name="orderId")
+    private Long orderId;
+
     public Cart(){}
     public Cart(Long flowerId, String flowerName, int quantity, BigDecimal totalPrice) {
         this.flowerId=flowerId;

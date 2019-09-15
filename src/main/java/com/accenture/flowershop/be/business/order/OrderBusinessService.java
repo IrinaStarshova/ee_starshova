@@ -1,7 +1,7 @@
 package com.accenture.flowershop.be.business.order;
 
 import com.accenture.flowershop.fe.dto.OrderDTO;
-import com.accenture.flowershop.fe.dto.UserDTO;
+
 import java.util.List;
 
 /**
@@ -11,10 +11,10 @@ public interface OrderBusinessService {
 
     /**
      * Метод для создания нового заказа
-     * @param user - пользователь, заказ которого должен быть создан
+     * @param login - login пользователя, заказ которого должен быть создан
      * @return булево значение, указывающее создан ли заказ
      */
-    boolean createNewOrder(UserDTO user);
+    boolean createNewOrder(String login);
 
     /**
      * Метод для получения списка DTO заказов

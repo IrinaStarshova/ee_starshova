@@ -1,13 +1,13 @@
 package com.accenture.flowershop.be.access.order;
 
 import com.accenture.flowershop.be.entity.cart.Cart;
+import com.accenture.flowershop.be.entity.flower.Flower;
 import com.accenture.flowershop.be.entity.order.Order;
 import com.accenture.flowershop.be.entity.user.Customer;
 import org.slf4j.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -27,8 +27,12 @@ public class OrderAccessServiceImpl implements OrderAccessService {
         order.setCost(customer.getCartCost());
         customer.addOrder(order);
         for (Cart c:carts){
-            entityManager.merge(c);
             order.addCart(c);
+            entityManager.merge(c);
+            Flower flower=entityManager.getReference(Flower.class, c.getFlowerId());
+            flower.setQuantity(flower.getQuantity()-c.getQuantity());
+            flower.setQuantityInCart(flower.getQuantityInCart() - c.getQuantity());
+
         }
         LOG.debug("Order: " + order.toString() + " was created!");
     }
@@ -41,15 +45,18 @@ public class OrderAccessServiceImpl implements OrderAccessService {
 
     @Override
     public List<Order> getOrders() {
-        TypedQuery<Order> o = entityManager.createQuery("Select o from  Order o", Order.class);
+        TypedQuery<Order> o = entityManager.createQuery
+                ("Select o from  Order o order by (o.creationDate, o.status)", Order.class);
         return o.getResultList();
     }
 
     @Override
     @Transactional
     public List<Order> getOrders(String login) {
-        Customer customer = entityManager.getReference(Customer.class, login);
-        return customer.getOrders();
+        TypedQuery<Order> q = entityManager.createQuery
+                ("Select o from  Order o where o.login=:login", Order.class);
+        q.setParameter("login", login);
+        return  q.getResultList();
     }
 
     @Override

@@ -1,7 +1,10 @@
 package com.accenture.flowershop.fe.dto;
 
+import com.accenture.flowershop.fe.enums.order.OrderStatuses;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderDTO {
 
@@ -9,9 +12,11 @@ public class OrderDTO {
     private BigDecimal cost;
     private Date creationDate;
     private Date closingDate;
-    private String status;
+    private OrderStatuses status;
+    private List<CartDTO> carts=new ArrayList<>();
 
-    public OrderDTO(Long id, BigDecimal cost, Date creationDate, Date closingDate, String status) {
+    public OrderDTO(Long id, BigDecimal cost, Date creationDate,
+                    Date closingDate, OrderStatuses status) {
         this.id=id;
         this.cost=cost;
         this.creationDate=creationDate;
@@ -35,8 +40,15 @@ public class OrderDTO {
         return closingDate;
     }
 
-    public String getStatus() {
+    public OrderStatuses getStatus() {
         return status;
     }
 
+    public List<CartDTO> getCarts() {
+        return carts;
+    }
+
+    public void addCart(CartDTO cart){
+        carts.add(cart);
+    }
 }

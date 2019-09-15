@@ -1,7 +1,6 @@
 package com.accenture.flowershop.be.access.cart;
 
 import com.accenture.flowershop.be.entity.cart.Cart;
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -13,9 +12,8 @@ public interface CartAccessService {
      * Добавляет строку в корзину пользователя
      * @param cart - элемент корзины, который нужно добавить
      * @param login - login пользователя, в корзину которого добавляется элемент
-     * @return суммарную текущую стоимость товаров в корзине
      */
-    BigDecimal addCartItem(Cart cart, String login);
+    void addCartItem(Cart cart, String login);
 
     /**
      * Возвращает список элементов корзины пользователя

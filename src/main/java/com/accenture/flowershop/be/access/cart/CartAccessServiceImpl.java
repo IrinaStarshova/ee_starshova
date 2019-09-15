@@ -2,7 +2,6 @@ package com.accenture.flowershop.be.access.cart;
 
 import com.accenture.flowershop.be.entity.cart.Cart;
 import com.accenture.flowershop.be.entity.flower.Flower;
-import com.accenture.flowershop.be.entity.order.Order;
 import com.accenture.flowershop.be.entity.user.Customer;
 import org.slf4j.*;
 import org.springframework.stereotype.Service;
@@ -23,26 +22,29 @@ public class CartAccessServiceImpl implements CartAccessService {
 
     @Override
     @Transactional
-    public BigDecimal addCartItem(Cart cart, String login) {
+    public void addCartItem(Cart cart, String login) {
         Customer customer = entityManager.getReference(Customer.class,login);
         customer.addCart(cart);
         customer.setCartCostWithDiscount(cart.getTotalPrice());
         LOG.debug("Add cart item to cart of user - " + customer.getLogin() + ": " + cart.toString());
-        return customer.getCartCost();
     }
 
     @Override
     @Transactional
     public List<Cart> getCarts(String login) {
-        Customer customer = entityManager.getReference(Customer.class, login);
-        return customer.getCarts();
+        TypedQuery<Cart> q = entityManager.createQuery
+                ("Select c from  Cart c where c.login=:login", Cart.class);
+        q.setParameter("login", login);
+        return  q.getResultList();
     }
 
     @Override
     @Transactional
     public List<Cart> getCarts(Long orderId) {
-        Order order = entityManager.getReference(Order.class, orderId);
-        return order.getCarts();
+        TypedQuery<Cart> q = entityManager.createQuery
+                ("Select c from  Cart c where c.orderId=:orderId", Cart.class);
+        q.setParameter("orderId", orderId);
+        return  q.getResultList();
     }
 
     @Override
@@ -56,8 +58,7 @@ public class CartAccessServiceImpl implements CartAccessService {
     @Override
     @Transactional
     public void clearCart(String login){
-        Customer customer = entityManager.getReference(Customer.class, login);
-        List<Cart> carts=customer.getCarts();
+        List<Cart> carts=getCarts(login);
         if(!carts.isEmpty()) {
             for (Cart c : carts) {
                 entityManager.remove(c);
@@ -65,7 +66,5 @@ public class CartAccessServiceImpl implements CartAccessService {
                 flower.setQuantityInCart(flower.getQuantityInCart() - c.getQuantity());
             }
         }
-        customer.setCartCost(BigDecimal.ZERO);
-        customer.clearCart();
     }
 }

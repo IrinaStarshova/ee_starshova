@@ -1,8 +1,22 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" isELIgnored = "false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
+<head>
+  <meta charset="utf-8">
+  <title>Flower shop</title>
+	<style type="text/css">
+		.block {
+		margin: 0 auto;
+		padding: 10px;
+        background: #d2d6df;
+        width: 350px;
+        align: center;
+	   }
+	</style>
+  </head>
     <body>
-        <h2>Welcome! Please create new account!</h2>
+    <div class="block" align="center">
+        <h2>Welcome! <br>Please create new account!</h2>
 
         <form method=post action =registerServlet>
             <p><input type="text" placeholder="username" name="username" required/></p>
@@ -21,5 +35,6 @@
             <br>Already have an account?
             <input type=submit value="Log in"/>
         </form>
+    </div>
     </body>
 <html>

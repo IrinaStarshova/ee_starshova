@@ -3,7 +3,6 @@ package com.accenture.flowershop.fe.servlets;
 import com.accenture.flowershop.be.business.order.OrderBusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,7 +31,8 @@ public class CloseServlet extends HttpServlet {
             request.getRequestDispatcher("/loginFormServlet").forward(request, response);
         else {
             orderBusinessService.closeOrder(Long.parseLong(request.getParameter("orderId")));
-            request.getRequestDispatcher("/adminPage.jsp").include(request, response);
+            session.setAttribute("orders", orderBusinessService.getOrders());
+            request.getRequestDispatcher("/adminPage.jsp").forward(request, response);
         }
     }
 }
