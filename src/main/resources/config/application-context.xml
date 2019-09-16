@@ -54,4 +54,10 @@
                 <prop key="hibernate.dialect">org.hibernate.dialect.H2Dialect</prop>
 	            <prop key="hibernate.show_sql">true</prop>
     </props></property></bean>
+
+    <context:property-placeholder location = "classpath:conf.properties"/>
+    <bean id="XMLConverter" class="com.accenture.flowershop.be.business.UserMarshallingServiceImpl">
+    <property name="marshaller" ref="castorMarshaller" />
+    </bean>
+    <bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller"/>
 </beans>

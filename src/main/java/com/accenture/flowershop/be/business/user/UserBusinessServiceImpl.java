@@ -1,5 +1,6 @@
 package com.accenture.flowershop.be.business.user;
 
+import com.accenture.flowershop.be.business.UserMarshallingService;
 import com.accenture.flowershop.be.access.cart.CartAccessService;
 import com.accenture.flowershop.be.access.order.OrderAccessService;
 import com.accenture.flowershop.be.access.user.UserAccessService;
@@ -10,6 +11,8 @@ import com.accenture.flowershop.fe.dto.UserDTO;
 import com.accenture.flowershop.fe.enums.order.OrderStatuses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 
 @Service
@@ -21,16 +24,20 @@ public class UserBusinessServiceImpl implements UserBusinessService {
     private OrderAccessService orderAccessService;
     @Autowired
     private CartAccessService cartAccessService;
+    @Autowired
+    private UserMarshallingService userMarshallingService;
     @Override
     public boolean createNewUser(String username, String password,
                                  String firstName, String patronymic,
                                  String lastName, String address,
-                                 String phoneNumber) {
+                                 String phoneNumber) throws IOException {
         if(userAccessService.getUser(username)!=null)
             return false;
-        userAccessService.addUser(new Customer(username, password,
+        Customer customer=new Customer(username, password,
                 firstName,  patronymic, lastName,  address,
-                phoneNumber, Customer.BALANCE, Customer.DISCOUNT));
+                phoneNumber, Customer.BALANCE, Customer.DISCOUNT);
+        userAccessService.addUser(customer);
+        userMarshallingService.convertFromUserToXML(customer,customer.getLogin());
         return true;
     }
 

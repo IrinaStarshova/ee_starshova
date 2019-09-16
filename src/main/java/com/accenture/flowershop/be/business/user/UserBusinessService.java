@@ -2,6 +2,8 @@ package com.accenture.flowershop.be.business.user;
 
 import com.accenture.flowershop.fe.dto.UserDTO;
 
+import java.io.IOException;
+
 /**
  * Интерфейс логики для пользователей
  */
@@ -20,7 +22,7 @@ public interface UserBusinessService {
      */
     boolean createNewUser(String username, String password,
                           String firstName, String patronymic,
-                          String lastName, String address, String phoneNumber);
+                          String lastName, String address, String phoneNumber) throws IOException;
 
     /**
      * Метод для осуществленяи входа пользователя
