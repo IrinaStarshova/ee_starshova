@@ -5,7 +5,7 @@ import com.accenture.flowershop.be.entity.flower.Flower;
 import com.accenture.flowershop.be.entity.order.Order;
 import com.accenture.flowershop.be.entity.user.Customer;
 import org.slf4j.*;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Класс доступа к базе данных для заказов
  */
-@Service
+@Repository
 public class OrderAccessServiceImpl implements OrderAccessService {
 
     @PersistenceContext

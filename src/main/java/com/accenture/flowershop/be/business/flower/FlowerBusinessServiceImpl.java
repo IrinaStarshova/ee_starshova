@@ -3,6 +3,8 @@ package com.accenture.flowershop.be.business.flower;
 import com.accenture.flowershop.be.access.flower.FlowerAccessService;
 import com.accenture.flowershop.be.entity.flower.Flower;
 import com.accenture.flowershop.fe.dto.FlowerDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +16,17 @@ public class FlowerBusinessServiceImpl implements FlowerBusinessService {
     @Autowired
     private FlowerAccessService flowerAccessService;
 
+    private static final Logger LOG = 	LoggerFactory.getLogger(FlowerBusinessService.class);
+
     @Override
     public List<FlowerDTO> getFlowers() {
         return flowersToFlowerDTOs(flowerAccessService.getFlowers());
     }
 
+    public void increaseQuantityOfFlowers(int count){
+        flowerAccessService.increaseQuantityOfFlowers(count);
+        LOG.debug("Quantity of flowers increased by "+ count);
+    }
 
     @Override
     public List<FlowerDTO> findFlowers(String name, String priceFrom, String priceTo) {

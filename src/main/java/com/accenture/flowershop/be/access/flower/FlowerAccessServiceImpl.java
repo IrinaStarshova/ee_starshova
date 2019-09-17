@@ -1,7 +1,7 @@
 package com.accenture.flowershop.be.access.flower;
 
 import com.accenture.flowershop.be.entity.flower.Flower;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Класс доступа к базе данных для цветов
  */
-@Service
+@Repository
 public class FlowerAccessServiceImpl implements FlowerAccessService {
 
     @PersistenceContext
@@ -22,6 +22,13 @@ public class FlowerAccessServiceImpl implements FlowerAccessService {
         Flower flower=entityManager.getReference(Flower.class,id);
         flower.setQuantityInCart(flower.getQuantityInCart()+quantity);
         return flower;
+    }
+
+    @Override
+    @Transactional
+    public void increaseQuantityOfFlowers(int count){
+        for(Flower f: getFlowers())
+            f.setQuantity(f.getQuantity()+count);
     }
 
     @Override

@@ -15,6 +15,12 @@ public interface FlowerBusinessService {
     List<FlowerDTO> getFlowers();
 
     /**
+     * Метод для увеличения значения количества всех цветов на определенное значение
+     * @param count - число, на которое должно быть уувеличено количество
+     */
+    void increaseQuantityOfFlowers(int count);
+
+    /**
      * Метод для поиска цветов по имени и диапазону цен
      * @param name - имя или часть имени цветка
      * @param priceFrom - нижняя граница диапазона цены
