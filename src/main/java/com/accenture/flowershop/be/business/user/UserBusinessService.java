@@ -18,11 +18,12 @@ public interface UserBusinessService {
      * @param lastName - фамилия пользователя
      * @param address - адрес пользователя
      * @param phoneNumber - номер телефона пользователя
-     * @return булево значение, указывающее создан ли пользователь
      */
-    boolean createNewUser(String username, String password,
+    void createNewUser(String username, String password,
                           String firstName, String patronymic,
                           String lastName, String address, String phoneNumber) throws IOException;
+
+    boolean isUserExists(String login);
 
     /**
      * Метод для осуществленяи входа пользователя

@@ -13,28 +13,50 @@
         align: center;
 	   }
 	</style>
+	<script src="http://code.jquery.com/jquery-2.2.4.js"
+                    type="text/javascript"></script>
   </head>
     <body>
     <div class="block" align="center">
         <h2>Welcome! <br>Please create new account!</h2>
 
         <form method=post action =registerServlet>
-            <p><input type="text" placeholder="username" name="username" required/></p>
-            <p><input type="password" placeholder="password" name="password" required/></p>
-            <p><input type="text" placeholder="first name" name="firstName" required/></p>
-            <p><input type="text" placeholder="patronymic" name="patronymic" required/></p>
-            <p><input type="text" placeholder="last name" name="lastName" required/></p>
-            <p><input type="text" placeholder="address" name="address" required/></p>
-            <p><input type="text" placeholder="phone number" name="phoneNumber" required/></p>
-            <input type=submit  value="Create account"/>
-            <c:if test = "${message != '0'}">
-                <p style="color:#ff0000">${message}</p>
-            </c:if>
+
+            <p><input id="username" type="text" placeholder="username"
+                name="username" autocomplete="off" required/></p>
+            <div id ="verificationMessage" style="color:#ff0000"></div>
+            <p><input id ="password" type="password" placeholder="password" name="password" required/></p>
+            <p><input type="text" placeholder="first name" name="firstName"/></p>
+            <p><input type="text" placeholder="patronymic" name="patronymic"/></p>
+            <p><input type="text" placeholder="last name" name="lastName"/></p>
+            <p><input type="text" placeholder="address" name="address"/></p>
+            <p><input type="text" placeholder="phone number" name="phoneNumber"/></p>
+            <input id="create" type=submit  value="Create account" />
         </form>
         <form method=post action=loginForm>
             <br>Already have an account?
             <input type=submit value="Log in"/>
         </form>
-    </div>
+        </div>
+        <script>
+            $("#username").on('keyup',function() {
+                $("#verificationMessage").text( "" );
+                $("#create").attr("disabled", false);
+                if(this.value) {
+                    $.ajax({
+                        url: "http://localhost:8080/flowershop/rest/verifyLogin/" + this.value,
+                        success: function(data) {
+                            if(data == "true"){
+                                $("#create").attr("disabled", true);
+                                $("#verificationMessage").text("Inputted login already exists!");
+                            }
+                        },
+                        error: function(data){
+                            $("#verificationMessage").text("Unknown error!");
+                        }
+                    });
+                }
+            });
+        </script>
     </body>
 <html>

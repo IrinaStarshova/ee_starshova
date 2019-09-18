@@ -27,18 +27,19 @@ public class UserBusinessServiceImpl implements UserBusinessService {
     @Autowired
     private UserMarshallingService userMarshallingService;
     @Override
-    public boolean createNewUser(String username, String password,
+    public void createNewUser(String username, String password,
                                  String firstName, String patronymic,
                                  String lastName, String address,
                                  String phoneNumber) throws IOException {
-        if(userAccessService.getUser(username)!=null)
-            return false;
         Customer customer=new Customer(username, password,
                 firstName,  patronymic, lastName,  address,
                 phoneNumber, Customer.BALANCE, Customer.DISCOUNT);
         userAccessService.addUser(customer);
         userMarshallingService.convertFromUserToXML(customer,customer.getLogin());
-        return true;
+    }
+    @Override
+    public boolean isUserExists(String login){
+        return userAccessService.getUser(login) != null;
     }
 
     @Override
