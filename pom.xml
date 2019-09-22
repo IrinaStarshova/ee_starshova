@@ -136,6 +136,11 @@
       <artifactId>jersey-spring3</artifactId>
       <version>${jersey.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-client</artifactId>
+      <version>5.14.1</version>
+    </dependency>
   </dependencies>
 
   <build>

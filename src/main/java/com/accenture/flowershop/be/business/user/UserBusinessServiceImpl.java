@@ -1,9 +1,11 @@
 package com.accenture.flowershop.be.business.user;
 
+
 import com.accenture.flowershop.be.business.UserMarshallingService;
 import com.accenture.flowershop.be.access.cart.CartAccessService;
 import com.accenture.flowershop.be.access.order.OrderAccessService;
 import com.accenture.flowershop.be.access.user.UserAccessService;
+import com.accenture.flowershop.be.business.jms.MessageService;
 import com.accenture.flowershop.be.entity.order.Order;
 import com.accenture.flowershop.be.entity.user.Customer;
 import com.accenture.flowershop.be.entity.user.User;
@@ -11,7 +13,7 @@ import com.accenture.flowershop.fe.dto.UserDTO;
 import com.accenture.flowershop.fe.enums.order.OrderStatuses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import javax.jms.JMSException;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -26,17 +28,22 @@ public class UserBusinessServiceImpl implements UserBusinessService {
     private CartAccessService cartAccessService;
     @Autowired
     private UserMarshallingService userMarshallingService;
+    @Autowired
+    private MessageService messageService;
+
     @Override
     public void createNewUser(String username, String password,
                                  String firstName, String patronymic,
                                  String lastName, String address,
-                                 String phoneNumber) throws IOException {
+                                 String phoneNumber) throws IOException, JMSException {
         Customer customer=new Customer(username, password,
                 firstName,  patronymic, lastName,  address,
                 phoneNumber, Customer.BALANCE, Customer.DISCOUNT);
         userAccessService.addUser(customer);
         userMarshallingService.convertFromUserToXML(customer,customer.getLogin());
+        messageService.sendCustomerXML(customer.getLogin());
     }
+
     @Override
     public boolean isUserExists(String login){
         return userAccessService.getUser(login) != null;

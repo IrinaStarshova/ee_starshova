@@ -2,6 +2,7 @@ package com.accenture.flowershop.be.business.user;
 
 import com.accenture.flowershop.fe.dto.UserDTO;
 
+import javax.jms.JMSException;
 import java.io.IOException;
 
 /**
@@ -21,7 +22,7 @@ public interface UserBusinessService {
      */
     void createNewUser(String username, String password,
                           String firstName, String patronymic,
-                          String lastName, String address, String phoneNumber) throws IOException;
+                          String lastName, String address, String phoneNumber) throws IOException, JMSException;
 
     boolean isUserExists(String login);
 

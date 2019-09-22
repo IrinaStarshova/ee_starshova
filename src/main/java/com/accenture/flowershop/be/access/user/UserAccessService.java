@@ -34,4 +34,6 @@ public interface UserAccessService {
      * @param login - login пользователя
      */
     void changeCartCost(String login);
+
+    void changeDiscount(String login, int discount);
 }

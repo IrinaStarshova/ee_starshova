@@ -44,4 +44,12 @@ public class UserAccessServiceImpl implements UserAccessService {
         Customer customer=(Customer)getUser(login);
         customer.setCartCost(BigDecimal.ZERO);
     }
+
+    @Override
+    @Transactional
+    public void changeDiscount(String login, int discount){
+        Customer customer=(Customer)getUser(login);
+        if(customer!=null)
+            customer.setDiscount(discount);
+    }
 }

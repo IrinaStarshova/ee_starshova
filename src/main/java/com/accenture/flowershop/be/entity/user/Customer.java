@@ -112,12 +112,36 @@ public class Customer extends User {
         return discount;
     }
 
+    public BigDecimal getCartCost() {
+        return cartCost;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public void setBalance(BigDecimal balance){
         this.balance=balance;
     }
 
-    public BigDecimal getCartCost() {
-        return cartCost;
+    public void setDiscount(int discount) {
+        this.discount = discount;
     }
 
     public void setCartCost(BigDecimal cartCost) {

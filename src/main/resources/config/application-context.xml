@@ -59,10 +59,23 @@
 
     <context:property-placeholder location = "classpath:conf.properties"/>
     <bean id="XMLConverter" class="com.accenture.flowershop.be.business.UserMarshallingServiceImpl">
-    <property name="marshaller" ref="castorMarshaller" />
+        <property name="marshaller" ref="castorMarshaller" />
+        <property name="unmarshaller" ref="castorMarshaller" />
     </bean>
-    <bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller"/>
+    <bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
+        <property name="targetClasses">
+        <list>
+            <value>com.accenture.flowershop.be.business.jms.DiscountRequestObject</value>
+            <value>com.accenture.flowershop.be.entity.user.Customer</value>
+        </list>
+    </property>
+    </bean>
     <bean id="FlowersStockWebService" class="com.accenture.flowershop.fe.ws.FlowersStockWebServiceImpl" />
     <jaxws:endpoint id="FlowersStockWebService1" implementor="#FlowersStockWebService"
     address="/FlowersStockWebService"/>
+
+    <jee:jndi-lookup id="connectionFactory" jndi-name="jms/connectionFactory"/>
+    <jee:jndi-lookup id="outDestination" jndi-name="jms/outQueue"/>
+    <jee:jndi-lookup id="inDestination" jndi-name="jms/inQueue"/>
+
 </beans>
