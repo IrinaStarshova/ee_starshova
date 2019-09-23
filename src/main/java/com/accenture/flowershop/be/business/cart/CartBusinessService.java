@@ -1,8 +1,6 @@
 package com.accenture.flowershop.be.business.cart;
 
-import com.accenture.flowershop.fe.dto.CartDTO;
-import com.accenture.flowershop.fe.dto.UserDTO;
-
+import com.accenture.flowershop.be.entity.cart.Cart;
 import java.util.List;
 
 /**
@@ -21,11 +19,11 @@ public interface CartBusinessService {
     boolean addToCart(Long id, int availableQuantity, int quantity, String login);
 
     /**
-     * Метод для получения списка DTO корзины определенного пользователя
+     * Метод для получения списка элементов корзины определенного пользователя
      * @param login - login пользователя, элементы корзины которого требуются
-     * @return список DTO корзины
+     * @return список элементов корзины
      */
-    List<CartDTO> getCart(String login);
+    List<Cart> getCart(String login);
 
     /**
      * Метод для очистки корзины пользователя

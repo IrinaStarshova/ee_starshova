@@ -1,6 +1,5 @@
 package com.accenture.flowershop.fe.dto;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 
 public class CartDTO {
@@ -10,13 +9,6 @@ public class CartDTO {
     private int quantity;
     private BigDecimal totalPrice;
 
-    public CartDTO(Long id, String flowerName, int quantity, BigDecimal totalPrice) {
-        this.id=id;
-        this.flowerName =flowerName;
-        this.quantity=quantity;
-        this.totalPrice=totalPrice;
-    }
-
     public Long getId() {
         return id;
     }
@@ -25,12 +17,27 @@ public class CartDTO {
         return flowerName;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
     public int getQuantity() {
         return quantity;
     }
 
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setFlowerName(String flowerName) {
+        this.flowerName = flowerName;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 }

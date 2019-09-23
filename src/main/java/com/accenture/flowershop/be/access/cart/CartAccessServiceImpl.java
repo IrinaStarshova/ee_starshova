@@ -40,15 +40,6 @@ public class CartAccessServiceImpl implements CartAccessService {
 
     @Override
     @Transactional
-    public List<Cart> getCarts(Long orderId) {
-        TypedQuery<Cart> q = entityManager.createQuery
-                ("Select c from  Cart c where c.orderId=:orderId", Cart.class);
-        q.setParameter("orderId", orderId);
-        return  q.getResultList();
-    }
-
-    @Override
-    @Transactional
     public void clearCartWhenOrdering(String login) {
         Customer customer = entityManager.getReference(Customer.class, login);
         customer.clearCart();
@@ -57,14 +48,15 @@ public class CartAccessServiceImpl implements CartAccessService {
 
     @Override
     @Transactional
-    public void clearCart(String login){
+    public boolean clearCart(String login){
         List<Cart> carts=getCarts(login);
-        if(!carts.isEmpty()) {
-            for (Cart c : carts) {
-                entityManager.remove(c);
-                Flower flower = entityManager.getReference(Flower.class, c.getFlowerId());
-                flower.setQuantityInCart(flower.getQuantityInCart() - c.getQuantity());
-            }
+        if(carts.isEmpty())
+            return false;
+        for (Cart c : carts) {
+            entityManager.remove(c);
+            Flower flower = entityManager.getReference(Flower.class, c.getFlowerId());
+            flower.setQuantityInCart(flower.getQuantityInCart() - c.getQuantity());
         }
+        return true;
     }
 }

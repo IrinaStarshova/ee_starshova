@@ -1,7 +1,6 @@
 package com.accenture.flowershop.be.access.order;
 
 import com.accenture.flowershop.be.entity.cart.Cart;
-import com.accenture.flowershop.be.entity.flower.Flower;
 import com.accenture.flowershop.be.entity.order.Order;
 import com.accenture.flowershop.be.entity.user.Customer;
 import org.slf4j.*;
@@ -26,19 +25,10 @@ public class OrderAccessServiceImpl implements OrderAccessService {
         Customer customer = entityManager.getReference(Customer.class, login);
         order.setCost(customer.getCartCost());
         customer.addOrder(order);
-        for (Cart c:carts){
-            order.addCart(c);
-            entityManager.merge(c);
-            Flower flower=entityManager.getReference(Flower.class, c.getFlowerId());
-            flower.setQuantity(flower.getQuantity()-c.getQuantity());
-            flower.setQuantityInCart(flower.getQuantityInCart() - c.getQuantity());
-
-        }
         LOG.debug("Order: " + order.toString() + " was created!");
     }
 
     @Override
-    @Transactional
     public Order getOrder(Long orderId) {
         return entityManager.find(Order.class, orderId);
     }
@@ -51,12 +41,11 @@ public class OrderAccessServiceImpl implements OrderAccessService {
     }
 
     @Override
-    @Transactional
     public List<Order> getOrders(String login) {
         TypedQuery<Order> q = entityManager.createQuery
                 ("Select o from  Order o where o.login=:login", Order.class);
         q.setParameter("login", login);
-        return  q.getResultList();
+        return q.getResultList();
     }
 
     @Override

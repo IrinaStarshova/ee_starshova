@@ -26,6 +26,15 @@ public class FlowerAccessServiceImpl implements FlowerAccessService {
 
     @Override
     @Transactional
+    public Flower setQuantity(Long id, int quantity) {
+        Flower flower=entityManager.getReference(Flower.class,id);
+        flower.setQuantity(flower.getQuantity()-quantity);
+        flower.setQuantityInCart(flower.getQuantityInCart() - quantity);
+        return flower;
+    }
+
+    @Override
+    @Transactional
     public void increaseQuantityOfFlowers(int count){
         for(Flower f: getFlowers())
             f.setQuantity(f.getQuantity()+count);

@@ -35,7 +35,7 @@ public class Order {
     @Column(name="login")
     private String login;
 
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "orderId")
     private List<Cart> carts=new ArrayList<>();
 
@@ -61,16 +61,20 @@ public class Order {
         return cost;
     }
 
-    public void setCost(BigDecimal cost) {
-        this.cost = cost;
-    }
-
     public Date getCreationDate() {
         return creationDate;
     }
 
     public Date getClosingDate() {
         return closingDate;
+    }
+
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 
     public void setClosingDate(Date closingDate) {

@@ -1,7 +1,7 @@
 package com.accenture.flowershop.be.business.user;
 
-import com.accenture.flowershop.fe.dto.UserDTO;
-
+import com.accenture.flowershop.be.entity.user.Customer;
+import com.accenture.flowershop.be.entity.user.User;
 import javax.jms.JMSException;
 import java.io.IOException;
 
@@ -27,12 +27,12 @@ public interface UserBusinessService {
     boolean isUserExists(String login);
 
     /**
-     * Метод для осуществленяи входа пользователя
+     * Метод для осуществления входа пользователя
      * @param login - login пользователя
      * @param password - пароль пользователя
-     * @return DTO пользователя при успешном входе
+     * @return сущность пользователя при успешном входе
      */
-    UserDTO userLogin(String login, String password);
+    User userLogin(String login, String password);
 
     /**
      * Метод для оплаты заказа
@@ -43,9 +43,9 @@ public interface UserBusinessService {
     boolean payOrder(String login,Long orderId);
 
     /**
-     * Метод для получения DTO пользователя с определенным логином
+     * Метод для получения пользователя с определенным логином
      * @param login - login пользователя
-     * @return DTO пользователя
+     * @return сущность пользователя
      */
-    UserDTO getUser(String login);
+    Customer getCustomer(String login);
 }

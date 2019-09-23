@@ -17,9 +17,11 @@ public interface FlowerAccessService {
      */
     Flower setQuantityInCart(Long id, int quantity);
 
+    Flower setQuantity(Long id, int quantity);
+
     /**
      * Метод для увеличения значения количества всех цветов на определенное значение
-     * @param count - число, на которое должно быть уувеличено количество
+     * @param count - число, на которое должно быть увеличено количество
      */
     void increaseQuantityOfFlowers(int count);
 

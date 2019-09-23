@@ -1,6 +1,8 @@
 package com.accenture.flowershop.fe.servlets;
 
 import com.accenture.flowershop.be.business.flower.FlowerBusinessService;
+import com.accenture.flowershop.fe.mapper.Mapper;
+import com.accenture.flowershop.fe.dto.FlowerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.servlet.ServletConfig;
@@ -17,6 +19,8 @@ public class searchServlet extends HttpServlet {
 
     @Autowired
     private FlowerBusinessService flowerBusinessService;
+    @Autowired
+    private Mapper mapper;
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -37,7 +41,9 @@ public class searchServlet extends HttpServlet {
                     if (!nameToSearch.isEmpty() || !priceFrom.isEmpty() || !priceTo.isEmpty()) {
                         session.setAttribute("foundedFlowers", "find");
                         session.setAttribute("flowers",
-                                flowerBusinessService.findFlowers(nameToSearch,priceFrom,priceTo));
+                                mapper.mapList
+                                (flowerBusinessService.findFlowers(nameToSearch,priceFrom,priceTo),
+                                        FlowerDTO.class));
                         session.setAttribute("nameToSearch", nameToSearch);
                         session.setAttribute("priceFrom", priceFrom);
                         session.setAttribute("priceTo", priceTo);
@@ -48,7 +54,8 @@ public class searchServlet extends HttpServlet {
                 else {
                     if(session.getAttribute("foundedFlowers")!=null){
                         session.setAttribute("foundedFlowers", null);
-                        session.setAttribute("flowers", flowerBusinessService.getFlowers());
+                        session.setAttribute("flowers",
+                                mapper.mapList(flowerBusinessService.getFlowers(), FlowerDTO.class));
                     }
                 }
                 request.getRequestDispatcher("/userPage.jsp").forward(request, response);

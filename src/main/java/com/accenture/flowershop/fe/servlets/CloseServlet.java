@@ -1,6 +1,8 @@
 package com.accenture.flowershop.fe.servlets;
 
 import com.accenture.flowershop.be.business.order.OrderBusinessService;
+import com.accenture.flowershop.fe.mapper.Mapper;
+import com.accenture.flowershop.fe.dto.OrderDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.servlet.ServletConfig;
@@ -17,6 +19,9 @@ public class CloseServlet extends HttpServlet {
 
     @Autowired
     private OrderBusinessService orderBusinessService;
+    @Autowired
+    private Mapper mapper;
+
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
@@ -31,7 +36,8 @@ public class CloseServlet extends HttpServlet {
             request.getRequestDispatcher("/loginFormServlet").forward(request, response);
         else {
             orderBusinessService.closeOrder(Long.parseLong(request.getParameter("orderId")));
-            session.setAttribute("orders", orderBusinessService.getOrders());
+            session.setAttribute("orders",
+                    mapper.mapList(orderBusinessService.getOrders(), OrderDTO.class));
             request.getRequestDispatcher("/adminPage.jsp").forward(request, response);
         }
     }

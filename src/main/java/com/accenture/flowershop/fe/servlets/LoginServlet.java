@@ -1,10 +1,11 @@
 package com.accenture.flowershop.fe.servlets;
 
-import com.accenture.flowershop.be.business.cart.CartBusinessService;
 import com.accenture.flowershop.be.business.flower.FlowerBusinessService;
 import com.accenture.flowershop.be.business.order.OrderBusinessService;
 import com.accenture.flowershop.be.business.user.UserBusinessService;
-import com.accenture.flowershop.fe.dto.UserDTO;
+import com.accenture.flowershop.be.entity.user.User;
+import com.accenture.flowershop.fe.mapper.Mapper;
+import com.accenture.flowershop.fe.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.servlet.*;
@@ -21,6 +22,8 @@ public class LoginServlet extends HttpServlet {
     private UserBusinessService userBusinessService;
     @Autowired
     private FlowerBusinessService flowerBusinessService;
+    @Autowired
+    private Mapper mapper;
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -32,18 +35,23 @@ public class LoginServlet extends HttpServlet {
             throws IOException, ServletException {
         String username=request.getParameter("username");
         String password=request.getParameter("password");
-        UserDTO user=userBusinessService.userLogin(username, password);
+        User user=userBusinessService.userLogin(username, password);
         if(user!=null) {
+            UserDTO userDTO=mapper.map(user, UserDTO.class);
             HttpSession session=request.getSession();
             session.setMaxInactiveInterval(20*60);
             if(user.isAdmin()) {
-                session.setAttribute("orders", orderBusinessService.getOrders());
+                userDTO.setAdmin(true);
+                session.setAttribute("orders",
+                        mapper.mapList(orderBusinessService.getOrders(), OrderDTO.class));
                 request.getRequestDispatcher("/adminPage.jsp").forward(request, response);
             }
             else {
-                session.setAttribute("user",user);
-                session.setAttribute("flowers",flowerBusinessService.getFlowers());
-                session.setAttribute("orders", orderBusinessService.getOrders(user.getLogin()));
+                session.setAttribute("user",userDTO);
+                session.setAttribute("flowers",
+                        mapper.mapList(flowerBusinessService.getFlowers(), FlowerDTO.class));
+                session.setAttribute("orders",
+                        mapper.mapList(orderBusinessService.getOrders(user.getLogin()), OrderDTO.class));
                 request.getRequestDispatcher("/userPage.jsp").forward(request, response);
             }
         }

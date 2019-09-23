@@ -1,7 +1,6 @@
 package com.accenture.flowershop.be.business.order;
 
-import com.accenture.flowershop.fe.dto.OrderDTO;
-
+import com.accenture.flowershop.be.entity.order.Order;
 import java.util.List;
 
 /**
@@ -17,17 +16,17 @@ public interface OrderBusinessService {
     boolean createNewOrder(String login);
 
     /**
-     * Метод для получения списка DTO заказов
-     * @return список DTO заказов
+     * Метод для получения списка заказов
+     * @return список заказов
      */
-    List<OrderDTO> getOrders();
+    List<Order> getOrders();
 
     /**
-     * Метод для получения списка DTO заказов определенного пользователя
+     * Метод для получения списка заказов определенного пользователя
      * @param login - login пользователя, заказы которого требуются
-     * @return список DTO заказов определенного пользователя
+     * @return список заказов определенного пользователя
      */
-    List<OrderDTO> getOrders(String login);
+    List<Order> getOrders(String login);
 
     /**
      * Метод для закрытия заказа

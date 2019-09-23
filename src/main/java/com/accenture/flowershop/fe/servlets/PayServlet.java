@@ -2,6 +2,8 @@ package com.accenture.flowershop.fe.servlets;
 
 import com.accenture.flowershop.be.business.order.OrderBusinessService;
 import com.accenture.flowershop.be.business.user.UserBusinessService;
+import com.accenture.flowershop.fe.mapper.Mapper;
+import com.accenture.flowershop.fe.dto.OrderDTO;
 import com.accenture.flowershop.fe.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -17,6 +19,9 @@ public class PayServlet extends HttpServlet {
     private UserBusinessService userBusinessService;
     @Autowired
     private OrderBusinessService orderBusinessService;
+    @Autowired
+    private Mapper mapper;
+
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this,
@@ -37,8 +42,10 @@ public class PayServlet extends HttpServlet {
                         "Order payment error. Pay attention to the current balance!");
             }
             else {
-                session.setAttribute("user", userBusinessService.getUser(login));
-                session.setAttribute("orders", orderBusinessService.getOrders(login));
+                session.setAttribute("user",
+                        mapper.map(userBusinessService.getCustomer(login), UserDTO.class));
+                session.setAttribute("orders",
+                        mapper.mapList(orderBusinessService.getOrders(login), OrderDTO.class));
             }
             request.getRequestDispatcher("/userPage.jsp").forward(request, response);
         }

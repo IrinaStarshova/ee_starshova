@@ -1,6 +1,6 @@
 package com.accenture.flowershop.be.business.flower;
 
-import com.accenture.flowershop.fe.dto.FlowerDTO;
+import com.accenture.flowershop.be.entity.flower.Flower;
 import java.util.List;
 
 /**
@@ -9,10 +9,10 @@ import java.util.List;
 public interface FlowerBusinessService {
 
     /**
-     * Метод для получения списка DTO имеющихся цветов
-     * @return список DTO цветов
+     * Метод для получения списка имеющихся цветов
+     * @return список цветов
      */
-    List<FlowerDTO> getFlowers();
+    List<Flower> getFlowers();
 
     /**
      * Метод для увеличения значения количества всех цветов на определенное значение
@@ -27,5 +27,5 @@ public interface FlowerBusinessService {
      * @param priceTo - верхняя граница диапазона цены
      * @return список найденных цветов
      */
-    List<FlowerDTO> findFlowers(String name, String priceFrom, String priceTo);
+    List<Flower> findFlowers(String name, String priceFrom, String priceTo);
 }

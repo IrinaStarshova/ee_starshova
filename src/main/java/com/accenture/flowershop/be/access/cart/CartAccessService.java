@@ -23,13 +23,6 @@ public interface CartAccessService {
     List<Cart> getCarts(String login);
 
     /**
-     *Возвращает список элементов корзины определенного заказа
-     * @param orderId - идентификатор заказа, список элементов которого нужно получить
-     * @return список элементов корзины определенного заказа
-     */
-    List<Cart> getCarts(Long orderId);
-
-    /**
      * Метод для очистки корзины пользователя после создания заказа
      * @param login - login пользователя, корзину которого необходимо очистить
      */
@@ -38,6 +31,7 @@ public interface CartAccessService {
     /**
      * Метод для очистки корзины пользователя и удаления соответствующих строк из таблицы БД
      * @param login- login пользователя, корзину которого необходимо очистить
+     * @return булево значение, указывающее была ли очищена корзина
      */
-    void clearCart(String login);
+    boolean clearCart(String login);
 }

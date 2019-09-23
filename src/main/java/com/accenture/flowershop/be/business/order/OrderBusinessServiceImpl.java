@@ -1,15 +1,13 @@
 package com.accenture.flowershop.be.business.order;
 
 import com.accenture.flowershop.be.access.cart.CartAccessService;
+import com.accenture.flowershop.be.access.flower.FlowerAccessService;
 import com.accenture.flowershop.be.access.order.OrderAccessService;
 import com.accenture.flowershop.be.entity.cart.Cart;
 import com.accenture.flowershop.be.entity.order.Order;
-import com.accenture.flowershop.fe.dto.CartDTO;
-import com.accenture.flowershop.fe.dto.OrderDTO;
 import com.accenture.flowershop.fe.enums.order.OrderStatuses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.sql.Date;
 import java.util.*;
 
@@ -19,6 +17,8 @@ public class OrderBusinessServiceImpl implements OrderBusinessService {
     private OrderAccessService orderAccessService;
     @Autowired
     private CartAccessService cartAccessService;
+    @Autowired
+    private FlowerAccessService flowerAccessService;
 
     @Override
     public boolean createNewOrder(String login)
@@ -28,19 +28,23 @@ public class OrderBusinessServiceImpl implements OrderBusinessService {
             return false;
         Date date=new Date(System.currentTimeMillis());
         Order order=new Order(date,OrderStatuses.created);
+        order.setCarts(carts);
         orderAccessService.createOrder(order, login, carts);
+        for (Cart c:carts){
+            flowerAccessService.setQuantity(c.getFlowerId(),c.getQuantity());
+        }
         cartAccessService.clearCartWhenOrdering(login);
         return true;
     }
 
     @Override
-    public List<OrderDTO> getOrders(){
-        return ordersToOrderDTOs(orderAccessService.getOrders());
+    public List<Order> getOrders(){
+        return orderAccessService.getOrders();
     }
 
     @Override
-    public List<OrderDTO> getOrders(String login){
-        return ordersToOrderDTOs(orderAccessService.getOrders(login));
+    public List<Order> getOrders(String login){
+        return orderAccessService.getOrders(login);
     }
 
     @Override
@@ -49,21 +53,5 @@ public class OrderBusinessServiceImpl implements OrderBusinessService {
         order.setClosingDate(new Date(System.currentTimeMillis()));
         order.setStatus(OrderStatuses.closed);
         orderAccessService.updateOrder(order);
-    }
-
-    private List<OrderDTO> ordersToOrderDTOs(List<Order> orders) {
-        List<OrderDTO> orderDTOs=new ArrayList<>();
-        for(Order order:orders) {
-            OrderDTO orderDTO=new OrderDTO(order.getId(), order.getCost(),
-                    order.getCreationDate(), order.getClosingDate(), order.getStatus());
-            orderDTOs.add(orderDTO);
-            addCartToOrderDTO(cartAccessService.getCarts(order.getId()),orderDTO);
-        }
-        return orderDTOs;
-    }
-    private void addCartToOrderDTO(List<Cart> cartList, OrderDTO orderDTO){
-        for (Cart cart : cartList)
-            orderDTO.addCart(new CartDTO(cart.getId(), cart.getFlowerName(),
-                    cart.getQuantity(), cart.getTotalPrice()));
     }
 }

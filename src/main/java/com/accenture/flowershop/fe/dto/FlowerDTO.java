@@ -10,14 +10,6 @@ public class FlowerDTO {
     private int quantity;
     private int quantityInCart;
 
-    public FlowerDTO(Long id, String name, BigDecimal price, int quantity, int quantityInCart) {
-        this.id=id;
-        this.name =name;
-        this.price=price;
-        this.quantity=quantity;
-        this.quantityInCart=quantityInCart;
-    }
-
     public Long getId() {
         return id;
     }
@@ -34,12 +26,24 @@ public class FlowerDTO {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public int getQuantityInCart() {
         return quantityInCart;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public void setQuantityInCart(int quantityInCart) {

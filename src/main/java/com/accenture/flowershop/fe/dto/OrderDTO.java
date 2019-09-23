@@ -15,15 +15,6 @@ public class OrderDTO {
     private OrderStatuses status;
     private List<CartDTO> carts=new ArrayList<>();
 
-    public OrderDTO(Long id, BigDecimal cost, Date creationDate,
-                    Date closingDate, OrderStatuses status) {
-        this.id=id;
-        this.cost=cost;
-        this.creationDate=creationDate;
-        this.closingDate=closingDate;
-        this.status=status;
-    }
-
     public Long getId() {
         return id;
     }
@@ -50,5 +41,29 @@ public class OrderDTO {
 
     public void addCart(CartDTO cart){
         carts.add(cart);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setClosingDate(Date closingDate) {
+        this.closingDate = closingDate;
+    }
+
+    public void setStatus(OrderStatuses status) {
+        this.status = status;
+    }
+
+    public void setCarts(List<CartDTO> carts) {
+        this.carts = carts;
     }
 }

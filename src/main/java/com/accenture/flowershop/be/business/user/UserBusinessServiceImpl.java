@@ -1,6 +1,5 @@
 package com.accenture.flowershop.be.business.user;
 
-
 import com.accenture.flowershop.be.business.UserMarshallingService;
 import com.accenture.flowershop.be.access.cart.CartAccessService;
 import com.accenture.flowershop.be.access.order.OrderAccessService;
@@ -9,7 +8,6 @@ import com.accenture.flowershop.be.business.jms.MessageService;
 import com.accenture.flowershop.be.entity.order.Order;
 import com.accenture.flowershop.be.entity.user.Customer;
 import com.accenture.flowershop.be.entity.user.User;
-import com.accenture.flowershop.fe.dto.UserDTO;
 import com.accenture.flowershop.fe.enums.order.OrderStatuses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,23 +48,22 @@ public class UserBusinessServiceImpl implements UserBusinessService {
     }
 
     @Override
-    public UserDTO userLogin(String login, String password)
+    public User userLogin(String login, String password)
     {
         User user=userAccessService.getUser(login);
         if(user==null)
             return null;
         if(!user.getPassword().equals(password))
             return null;
-        if(user.isAdmin())
-            return new UserDTO(user.getLogin(),true);
-        Customer customer=(Customer)user;
-        return userToUserDTO(customer);
+        return user;
     }
 
     @Override
     public boolean payOrder(String login,Long orderId){
         Customer customer=(Customer)userAccessService.getUser(login);
+        System.out.println("");
         Order order=orderAccessService.getOrder(orderId);
+        System.out.println("");
         BigDecimal orderCost=order.getCost();
         BigDecimal userBalance=customer.getBalance();
         if(orderCost.compareTo(userBalance) > 0)
@@ -76,21 +73,10 @@ public class UserBusinessServiceImpl implements UserBusinessService {
         userAccessService.updateCustomer(customer);
         orderAccessService.updateOrder(order);
         return true;
-
     }
 
     @Override
-    public UserDTO getUser(String login) {
-        Customer customer=(Customer)userAccessService.getUser(login);
-        if(customer==null)
-            return null;
-        return userToUserDTO(customer);
-    }
-
-    private UserDTO userToUserDTO(Customer customer) {
-        return new UserDTO(customer.getLogin(), customer.getFirstName(),
-                customer.getPatronymic(),customer.getLastName(), customer.getAddress(),
-                customer.getPhoneNumber(), customer.getBalance(), customer.getDiscount(),
-                customer.getCartCost(), false);
+    public Customer getCustomer(String login) {
+        return (Customer)userAccessService.getUser(login);
     }
 }
