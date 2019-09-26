@@ -8,7 +8,7 @@ import com.accenture.flowershop.be.business.jms.MessageService;
 import com.accenture.flowershop.be.entity.order.Order;
 import com.accenture.flowershop.be.entity.user.Customer;
 import com.accenture.flowershop.be.entity.user.User;
-import com.accenture.flowershop.fe.enums.order.OrderStatuses;
+import com.accenture.flowershop.fe.enums.order.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.jms.JMSException;
@@ -61,15 +61,13 @@ public class UserBusinessServiceImpl implements UserBusinessService {
     @Override
     public boolean payOrder(String login,Long orderId){
         Customer customer=(Customer)userAccessService.getUser(login);
-        System.out.println("");
         Order order=orderAccessService.getOrder(orderId);
-        System.out.println("");
         BigDecimal orderCost=order.getCost();
         BigDecimal userBalance=customer.getBalance();
         if(orderCost.compareTo(userBalance) > 0)
             return false;
         customer.setBalance(userBalance.subtract(orderCost));
-        order.setStatus(OrderStatuses.paid);
+        order.setStatus(OrderStatus.PAID);
         userAccessService.updateCustomer(customer);
         orderAccessService.updateOrder(order);
         return true;

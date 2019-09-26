@@ -4,16 +4,16 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity(name = "Cart")
-@Table(name = "carts")
+@Table(name = "cart")
 public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
-    @SequenceGenerator(name = "seq", sequenceName = "carts_seq", allocationSize = 1)
+    @SequenceGenerator(name = "seq", sequenceName = "cart_seq", allocationSize = 1)
     @Column(name="id")
     private Long id;
 
-    @Column(name="flowerId")
+    @Column(name="flower_id")
     private Long flowerId;
 
     @Column(name="flowerName")
@@ -22,13 +22,13 @@ public class Cart {
     @Column(name="quantity")
     private int quantity;
 
-    @Column(name="totalPrice")
+    @Column(name="total_price")
     private BigDecimal totalPrice;
 
     @Column(name="login")
     private String login;
 
-    @Column(name="orderId")
+    @Column(name="order_id")
     private Long orderId;
 
     public Cart(){}

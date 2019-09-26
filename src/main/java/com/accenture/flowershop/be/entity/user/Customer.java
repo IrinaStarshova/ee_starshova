@@ -8,23 +8,23 @@ import java.math.RoundingMode;
 import java.util.List;
 
 @Entity(name = "Customer")
-@Table(name = "customers")
+@Table(name = "customer")
 public class Customer extends User {
     public static final BigDecimal BALANCE=new BigDecimal(2000);
     public static final int DISCOUNT=3;
-    @Column(name="firstName")
+    @Column(name="first_name")
     private String firstName;
 
     @Column(name="patronymic")
     private String patronymic;
 
-    @Column(name="lastName")
+    @Column(name="last_name")
     private String lastName;
 
     @Column(name="address")
     private String address;
 
-    @Column(name="phoneNumber")
+    @Column(name="phone_number")
     private String phoneNumber;
 
     @Column(name="balance")
@@ -33,7 +33,7 @@ public class Customer extends User {
     @Column(name="discount")
     private int discount;
 
-    @Column(name="cartCost")
+    @Column(name="cart_cost")
     private BigDecimal cartCost=BigDecimal.ZERO;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -149,9 +149,11 @@ public class Customer extends User {
     }
 
     public void setCartCostWithDiscount(BigDecimal totalPrice) {
+        BigDecimal d=new BigDecimal((100.00-discount)/100)
+                .setScale(2, RoundingMode.HALF_UP);
         cartCost = (cartCost.add(totalPrice
-                .multiply(new BigDecimal((100.00-discount)/100.00))))
-                .setScale(2, RoundingMode.CEILING);
+                .multiply(d)))
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override

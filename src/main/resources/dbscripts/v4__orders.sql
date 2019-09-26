@@ -1,18 +1,12 @@
-create sequence orders_seq;
+create sequence order_seq;
 --------------------------------------------------------
---  DDL for Table flowers
+--  DDL for Table order
 --------------------------------------------------------
-  create table orders
+  create table order_
    (id Long(10) primary key,
 	cost dec(12,2) not null,
-	creationDate date not null,
-	closingDate date,
+	creation_date date not null,
+	closing_date date,
 	status varchar(10) not null,
 	login varchar(10)
     );
-
---------------------------------------------------------
---  Insert data
---------------------------------------------------------
---insert into orders (id,cost,creationDate,closingDate,status) values (orders_seq.nextval, '200', '2019.08.30','','create');
---commit;

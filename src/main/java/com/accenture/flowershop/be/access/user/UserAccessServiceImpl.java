@@ -4,7 +4,6 @@ import com.accenture.flowershop.be.entity.user.Customer;
 import com.accenture.flowershop.be.entity.user.User;
 import org.slf4j.*;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
 import java.math.BigDecimal;

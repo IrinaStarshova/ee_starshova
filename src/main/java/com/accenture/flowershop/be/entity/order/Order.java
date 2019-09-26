@@ -1,8 +1,7 @@
 package com.accenture.flowershop.be.entity.order;
 
 import com.accenture.flowershop.be.entity.cart.Cart;
-import com.accenture.flowershop.fe.enums.order.OrderStatuses;
-import org.hibernate.Hibernate;
+import com.accenture.flowershop.fe.enums.order.OrderStatus;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -11,36 +10,36 @@ import java.util.List;
 
 
 @Entity(name = "Order")
-@Table(name = "orders")
+@Table(name = "order_")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
-    @SequenceGenerator(name = "seq", sequenceName = "orders_seq", allocationSize = 1)
+    @SequenceGenerator(name = "seq", sequenceName = "order_seq", allocationSize = 1)
     @Column(name="id")
     private Long id;
 
     @Column(name="cost")
     private BigDecimal cost;
 
-    @Column(name="creationDate")
+    @Column(name="creation_date")
     private Date creationDate;
 
-    @Column(name="closingDate")
+    @Column(name="closing_date")
     private Date closingDate;
 
     @Column(name="status")
     @Enumerated(EnumType.STRING)
-    private OrderStatuses status;
+    private OrderStatus status;
 
     @Column(name="login")
     private String login;
 
     @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinColumn(name = "orderId")
+    @JoinColumn(name = "order_id")
     private List<Cart> carts=new ArrayList<>();
 
     public Order(){}
-    public Order(Date creationDate, OrderStatuses status) {
+    public Order(Date creationDate, OrderStatus status) {
         this.creationDate=creationDate;
         this.status=status;
     }
@@ -81,11 +80,11 @@ public class Order {
         this.closingDate = closingDate;
     }
 
-    public OrderStatuses getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(OrderStatuses status){ this.status=status;}
+    public void setStatus(OrderStatus status){ this.status=status;}
 
     @Override
     public String toString() {

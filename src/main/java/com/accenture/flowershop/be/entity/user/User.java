@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity(name = "User")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@Table(name = "users")
+@Table(name = "user_")
 public class User {
     @Id
     @Column(name="login")

@@ -1,13 +1,13 @@
-create sequence carts_seq;
+create sequence cart_seq;
 --------------------------------------------------------
---  DDL for Table carts
+--  DDL for Table cart
 --------------------------------------------------------
-  create table carts
+  create table cart
    (id Long(10) primary key,
-   flowerId Long(10) not null,
+   flower_id Long(10) not null,
    flowerName varchar(10) not null,
    quantity int(10) not null,
-   totalPrice dec(10,2) not null,
+   total_price dec(10,2) not null,
    login varchar(10),
-   orderId Long(10)
+   order_id Long(10)
     );

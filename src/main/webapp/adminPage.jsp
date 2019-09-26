@@ -48,8 +48,8 @@
 					<td align="center">${iterator.cost}</td>
 					<td align="center">${iterator.creationDate}</td>
 					<td align="center">${iterator.closingDate}</td>
-					<td align="center">${iterator.status}</td>
-					<c:if test = "${iterator.status == 'paid'}">
+					<td align="center">${iterator.status.toString()}</td>
+					<c:if test = "${iterator.status == 'PAID'}">
 					    <td style="width:30px;" align="center"><input type=submit value="Close"/></td>
                     </c:if>
 					</form>

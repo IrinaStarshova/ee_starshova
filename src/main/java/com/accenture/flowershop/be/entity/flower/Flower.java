@@ -4,12 +4,12 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity(name = "Flower")
-@Table(name = "flowers")
+@Table(name = "flower")
 public class Flower {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
-    @SequenceGenerator(name = "seq", sequenceName = "flowers_seq", allocationSize = 1)
+    @SequenceGenerator(name = "seq", sequenceName = "flower_seq", allocationSize = 1)
     @Column(name="id")
     private Long id;
 
@@ -22,7 +22,7 @@ public class Flower {
     @Column(name="quantity")
     private int quantity;
 
-    @Column(name="quantityInCart")
+    @Column(name="quantity_in_cart")
     private int quantityInCart;
 
     public Flower(){}

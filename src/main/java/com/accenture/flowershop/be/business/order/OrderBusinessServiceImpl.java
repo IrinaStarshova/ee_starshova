@@ -5,7 +5,7 @@ import com.accenture.flowershop.be.access.flower.FlowerAccessService;
 import com.accenture.flowershop.be.access.order.OrderAccessService;
 import com.accenture.flowershop.be.entity.cart.Cart;
 import com.accenture.flowershop.be.entity.order.Order;
-import com.accenture.flowershop.fe.enums.order.OrderStatuses;
+import com.accenture.flowershop.fe.enums.order.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.sql.Date;
@@ -27,7 +27,7 @@ public class OrderBusinessServiceImpl implements OrderBusinessService {
         if(carts.isEmpty())
             return false;
         Date date=new Date(System.currentTimeMillis());
-        Order order=new Order(date,OrderStatuses.created);
+        Order order=new Order(date, OrderStatus.CREATED);
         order.setCarts(carts);
         orderAccessService.createOrder(order, login, carts);
         for (Cart c:carts){
@@ -51,7 +51,7 @@ public class OrderBusinessServiceImpl implements OrderBusinessService {
     public void closeOrder(Long id) {
         Order order=orderAccessService.getOrder(id);
         order.setClosingDate(new Date(System.currentTimeMillis()));
-        order.setStatus(OrderStatuses.closed);
+        order.setStatus(OrderStatus.CLOSED);
         orderAccessService.updateOrder(order);
     }
 }

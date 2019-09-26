@@ -143,8 +143,8 @@
 					<td align="center">${iterator.cost}</td>
 					<td align="center">${iterator.creationDate}</td>
 					<td align="center">${iterator.closingDate}</td>
-					<td align="center">${iterator.status}</td>
-					<c:if test = "${iterator.status == 'created'}">
+					<td align="center">${iterator.status.toString()}</td>
+					<c:if test = "${iterator.status == 'CREATED'}">
 					    <td style="width:30px;"><input type=submit value="Pay"/></td>
                     </c:if>
                     </tr>
