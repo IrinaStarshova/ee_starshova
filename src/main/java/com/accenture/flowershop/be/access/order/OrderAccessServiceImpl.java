@@ -1,9 +1,14 @@
 package com.accenture.flowershop.be.access.order;
 
+import com.accenture.flowershop.be.access.repositories.OrderRepository;
 import com.accenture.flowershop.be.entity.cart.Cart;
 import com.accenture.flowershop.be.entity.order.Order;
+import com.accenture.flowershop.be.entity.order.QOrder;
 import com.accenture.flowershop.be.entity.user.Customer;
+import com.google.common.collect.Lists;
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
@@ -17,6 +22,8 @@ public class OrderAccessServiceImpl implements OrderAccessService {
 
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private OrderRepository repository;
     private static final Logger LOG = 	LoggerFactory.getLogger(OrderAccessService.class);
 
     @Override
@@ -30,22 +37,19 @@ public class OrderAccessServiceImpl implements OrderAccessService {
 
     @Override
     public Order getOrder(Long orderId) {
-        return entityManager.find(Order.class, orderId);
+        return repository.findOne(QOrder.order.id.eq(orderId)).orElse(null);
     }
 
     @Override
     public List<Order> getOrders() {
-        TypedQuery<Order> o = entityManager.createQuery
-                ("Select o from  Order o order by (o.creationDate, o.status)", Order.class);
-        return o.getResultList();
+        Sort creationDateAndStatusSort=new Sort(Sort.Direction.ASC
+                , "creationDate","status");
+        return Lists.newArrayList(repository.findAll(QOrder.order.isNotNull(),creationDateAndStatusSort));
     }
 
     @Override
     public List<Order> getOrders(String login) {
-        TypedQuery<Order> q = entityManager.createQuery
-                ("Select o from  Order o where o.login=:login", Order.class);
-        q.setParameter("login", login);
-        return q.getResultList();
+        return Lists.newArrayList(repository.findAll(QOrder.order.login.eq(login)));
     }
 
     @Override

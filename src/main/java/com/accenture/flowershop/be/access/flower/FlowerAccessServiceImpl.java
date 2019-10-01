@@ -1,6 +1,11 @@
 package com.accenture.flowershop.be.access.flower;
 
+import com.accenture.flowershop.be.access.repositories.FlowerRepository;
 import com.accenture.flowershop.be.entity.flower.Flower;
+import com.accenture.flowershop.be.entity.flower.QFlower;
+import com.google.common.collect.Lists;
+import com.querydsl.core.BooleanBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
@@ -15,6 +20,8 @@ public class FlowerAccessServiceImpl implements FlowerAccessService {
 
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private FlowerRepository repository;
 
     @Override
     @Transactional
@@ -42,17 +49,18 @@ public class FlowerAccessServiceImpl implements FlowerAccessService {
 
     @Override
     public List<Flower> getFlowers() {
-        TypedQuery<Flower> q = entityManager.createQuery("Select f from  Flower f", Flower.class);
-        return q.getResultList();
+        return Lists.newArrayList(repository.findAll());
     }
     @Override
     public List<Flower> findFlowers(String name, BigDecimal minPrice, BigDecimal maxPrice) {
-        TypedQuery<Flower> q = entityManager.createQuery
-                ("Select f from  Flower f where upper(f.name) like upper(:name) " +
-                                "and f.price between :minPrice and :maxPrice", Flower.class);
-        q.setParameter("name", "%"+name+"%");
-        q.setParameter("minPrice", minPrice);
-        q.setParameter("maxPrice", maxPrice);
-        return q.getResultList();
+        BooleanBuilder builder=new BooleanBuilder();
+        if(!name.isEmpty())
+            builder.and(QFlower.flower.name.containsIgnoreCase(name));
+        if(minPrice != null)
+            builder.and(QFlower.flower.price.goe(minPrice));
+        if(maxPrice != null)
+            builder.and(QFlower.flower.price.loe(maxPrice));
+        return Lists.newArrayList
+                (repository.findAll(builder.getValue()));
     }
 }

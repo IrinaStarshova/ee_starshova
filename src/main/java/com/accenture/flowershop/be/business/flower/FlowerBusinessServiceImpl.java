@@ -27,13 +27,8 @@ public class FlowerBusinessServiceImpl implements FlowerBusinessService {
 
     @Override
     public List<Flower> findFlowers(String name, String priceFrom, String priceTo) {
-        BigDecimal minPrice=BigDecimal.ZERO;
-        BigDecimal maxPrice=new BigDecimal(100000.00);
-        if(!priceFrom.isEmpty() && !priceFrom.equals("0")) {
-            minPrice = new BigDecimal(priceFrom);
-        }
-        if(!priceTo.isEmpty())
-            maxPrice=new BigDecimal(priceTo);
+        BigDecimal minPrice=(!priceFrom.isEmpty())?new BigDecimal(priceFrom):null;
+        BigDecimal maxPrice=(!priceTo.isEmpty())?new BigDecimal(priceTo):null;
         return flowerAccessService.findFlowers(name, minPrice, maxPrice);
     }
 }

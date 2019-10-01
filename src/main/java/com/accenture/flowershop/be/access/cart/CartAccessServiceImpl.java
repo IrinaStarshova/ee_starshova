@@ -1,9 +1,13 @@
 package com.accenture.flowershop.be.access.cart;
 
+import com.accenture.flowershop.be.access.repositories.CartRepository;
 import com.accenture.flowershop.be.entity.cart.Cart;
+import com.accenture.flowershop.be.entity.cart.QCart;
 import com.accenture.flowershop.be.entity.flower.Flower;
 import com.accenture.flowershop.be.entity.user.Customer;
+import com.google.common.collect.Lists;
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
@@ -18,6 +22,8 @@ public class CartAccessServiceImpl implements CartAccessService {
 
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private CartRepository repository;
     private static final Logger LOG = 	LoggerFactory.getLogger(CartAccessService.class);
 
     @Override
@@ -30,12 +36,8 @@ public class CartAccessServiceImpl implements CartAccessService {
     }
 
     @Override
-    @Transactional
     public List<Cart> getCarts(String login) {
-        TypedQuery<Cart> q = entityManager.createQuery
-                ("Select c from  Cart c where c.login=:login", Cart.class);
-        q.setParameter("login", login);
-        return  q.getResultList();
+        return Lists.newArrayList(repository.findAll(QCart.cart.login.eq(login)));
     }
 
     @Override

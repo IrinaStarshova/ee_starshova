@@ -1,8 +1,11 @@
 package com.accenture.flowershop.be.access.user;
 
+import com.accenture.flowershop.be.access.repositories.UserRepository;
 import com.accenture.flowershop.be.entity.user.Customer;
+import com.accenture.flowershop.be.entity.user.QUser;
 import com.accenture.flowershop.be.entity.user.User;
 import org.slf4j.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
@@ -16,12 +19,13 @@ public class UserAccessServiceImpl implements UserAccessService {
 
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private UserRepository repository;
     private static final Logger LOG = 	LoggerFactory.getLogger(UserAccessService.class);
 
     @Override
-    @Transactional
     public User getUser(String login) {
-           return entityManager.find(User.class,login);
+        return repository.findOne(QUser.user.login.eq(login)).orElse(null);
     }
 
     @Override
