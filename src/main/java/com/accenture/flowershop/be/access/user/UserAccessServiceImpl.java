@@ -1,15 +1,16 @@
 package com.accenture.flowershop.be.access.user;
 
 import com.accenture.flowershop.be.access.repositories.UserRepository;
+import com.accenture.flowershop.be.business.exceptions.UserExistException;
 import com.accenture.flowershop.be.entity.user.Customer;
 import com.accenture.flowershop.be.entity.user.QUser;
 import com.accenture.flowershop.be.entity.user.User;
-import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.*;
-import java.math.BigDecimal;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Класс доступа к базе данных для пользователей
@@ -21,38 +22,21 @@ public class UserAccessServiceImpl implements UserAccessService {
     private EntityManager entityManager;
     @Autowired
     private UserRepository repository;
-    private static final Logger LOG = 	LoggerFactory.getLogger(UserAccessService.class);
 
     @Override
+    @Transactional
     public User getUser(String login) {
         return repository.findOne(QUser.user.login.eq(login)).orElse(null);
     }
 
     @Override
     @Transactional
-    public void addUser(Customer user) {
-        entityManager.persist(user);
-        LOG.debug("User with login = {} was created: " + user.toString(),user.getLogin());
-    }
-
-    @Override
-    @Transactional
-    public void updateCustomer(Customer customer){
-        entityManager.merge(customer);
-    }
-
-    @Override
-    @Transactional
-    public void changeCartCost(String login){
-        Customer customer=(Customer)getUser(login);
-        customer.setCartCost(BigDecimal.ZERO);
-    }
-
-    @Override
-    @Transactional
-    public void changeDiscount(String login, int discount){
-        Customer customer=(Customer)getUser(login);
-        if(customer!=null)
-            customer.setDiscount(discount);
+    public void addUser(Customer user)
+            throws UserExistException {
+        if (getUser(user.getLogin()) == null) {
+            entityManager.persist(user);
+        } else {
+            throw new UserExistException();
+        }
     }
 }

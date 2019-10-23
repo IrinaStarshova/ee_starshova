@@ -2,6 +2,7 @@ package com.accenture.flowershop.be.entity.order;
 
 import com.accenture.flowershop.be.entity.cart.Cart;
 import com.accenture.flowershop.fe.enums.order.OrderStatus;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -15,36 +16,41 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
     @SequenceGenerator(name = "seq", sequenceName = "order_seq", allocationSize = 1)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name="cost")
+    @Column(name = "cost")
     private BigDecimal cost;
 
-    @Column(name="creation_date")
+    @Column(name = "creation_date")
     private Date creationDate;
 
-    @Column(name="closing_date")
+    @Column(name = "closing_date")
     private Date closingDate;
 
-    @Column(name="status")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @Column(name="login")
+    @Column(name = "login")
     private String login;
 
-    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
-    private List<Cart> carts=new ArrayList<>();
+    private List<Cart> carts = new ArrayList<>();
 
-    public Order(){}
-    public Order(Date creationDate, OrderStatus status) {
-        this.creationDate=creationDate;
-        this.status=status;
+    public Order() {
     }
 
-    public void addCart(Cart cart){
+    public Order(BigDecimal cost, Date creationDate,
+                 OrderStatus status, List<Cart> carts) {
+        this.cost = cost;
+        this.creationDate = creationDate;
+        this.status = status;
+        this.carts = carts;
+    }
+
+    public void addCart(Cart cart) {
         carts.add(cart);
     }
 
@@ -68,29 +74,39 @@ public class Order {
         return closingDate;
     }
 
+    public OrderStatus getStatus() {
+        return status;
+    }
+
     public List<Cart> getCarts() {
         return carts;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setCost(BigDecimal cost) {
         this.cost = cost;
     }
 
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public void setClosingDate(Date closingDate) {
         this.closingDate = closingDate;
     }
 
-    public OrderStatus getStatus() {
-        return status;
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
-
-    public void setStatus(OrderStatus status){ this.status=status;}
 
     @Override
     public String toString() {
         return "||ID: " + id +
                 " Cost: " + cost +
                 " CreationDate: " + creationDate +
-                " Status: " + status +"||";
+                " Status: " + status + "||";
     }
 }

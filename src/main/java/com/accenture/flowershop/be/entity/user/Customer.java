@@ -59,21 +59,7 @@ public class Customer extends User {
     }
 
     public void addCart(Cart cart){
-        Cart findCart=findByFlowerName(cart.getFlowerName());
-        if(findCart!=null) {
-            findCart.setQuantity(findCart.getQuantity() + cart.getQuantity());
-            findCart.setTotalPrice(findCart.getTotalPrice().add(cart.getTotalPrice()));
-        }
-        else
             carts.add(cart);
-    }
-
-    private Cart findByFlowerName(String flowerName){
-        for(Cart c:carts) {
-            if (c.getFlowerName().equals(flowerName))
-                return c;
-        }
-        return null;
     }
 
     public void clearCart(){
@@ -114,6 +100,14 @@ public class Customer extends User {
 
     public BigDecimal getCartCost() {
         return cartCost;
+    }
+
+    public List<Cart> getCarts() {
+        return carts;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
     }
 
     public void setFirstName(String firstName) {

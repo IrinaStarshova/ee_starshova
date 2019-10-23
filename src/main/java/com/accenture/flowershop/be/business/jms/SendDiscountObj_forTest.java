@@ -39,20 +39,18 @@ public class SendDiscountObj_forTest {
     public  void sendDiscountObj_forTestChange() throws JMSException {
 
         connection.start();
-        consumer.setMessageListener(new MessageListener() {
-            public void onMessage(Message message) {
-                try {
-                    Customer customer = (Customer) userMarshallingService.
-                            convertXMLStringToObject(((TextMessage) message).getText());
-                    TextMessage droXML =
-                            session.createTextMessage(userMarshallingService.
-                                    convertObjectToXMLString(new DiscountRequestObject
-                                            (customer.getLogin(),20)));
-                    producer.send(droXML);
-                    LOG.info("Message with discount for user \"" + customer.getLogin() + "\" was send");
-                } catch (JMSException | IOException e) {
-                    e.printStackTrace();
-                }
+        consumer.setMessageListener(message -> {
+            try {
+                Customer customer = (Customer) userMarshallingService.
+                        convertXMLStringToObject(((TextMessage) message).getText());
+                TextMessage droXML =
+                        session.createTextMessage(userMarshallingService.
+                                convertObjectToXMLString(new DiscountRequestObject
+                                        (customer.getLogin(),20)));
+                producer.send(droXML);
+                LOG.info("Message with discount for user \"" + customer.getLogin() + "\" was send");
+            } catch (JMSException | IOException e) {
+                e.printStackTrace();
             }
         });
     }

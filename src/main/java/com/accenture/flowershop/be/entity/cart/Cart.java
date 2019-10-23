@@ -59,6 +59,14 @@ public class Cart {
         return quantity;
     }
 
+    public void setFlowerId(Long flowerId) {
+        this.flowerId = flowerId;
+    }
+
+    public void setFlowerName(String flowerName) {
+        this.flowerName = flowerName;
+    }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
@@ -71,7 +79,9 @@ public class Cart {
     public String toString() {
         return "||Name of flower: " + flowerName +
                 " Quantity: " + quantity+
-                " Price: " + totalPrice+"||";
+                " Price: " + totalPrice+
+                " User: "+login+
+                " Order id: "+orderId+"||";
     }
 
 }

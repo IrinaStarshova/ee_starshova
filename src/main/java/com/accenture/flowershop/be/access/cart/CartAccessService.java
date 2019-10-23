@@ -1,6 +1,7 @@
 package com.accenture.flowershop.be.access.cart;
 
 import com.accenture.flowershop.be.entity.cart.Cart;
+
 import java.util.List;
 
 /**
@@ -9,29 +10,26 @@ import java.util.List;
 public interface CartAccessService {
 
     /**
-     * Добавляет строку в корзину пользователя
-     * @param cart - элемент корзины, который нужно добавить
-     * @param login - login пользователя, в корзину которого добавляется элемент
-     */
-    void addCartItem(Cart cart, String login);
-
-    /**
      * Возвращает список элементов корзины пользователя
+     *
      * @param login - login пользователя, корзину которого требуется получить
      * @return список элементов корзины пользователя
      */
     List<Cart> getCarts(String login);
 
     /**
-     * Метод для очистки корзины пользователя после создания заказа
-     * @param login - login пользователя, корзину которого необходимо очистить
+     * Возвращает элемент корзины пользователя с определенным цветком
+     *
+     * @param login    - login пользователя, корзину которого требуется получить
+     * @param flowerId - идентификатор цветка, элемент корзины с которым требуется
+     * @return элемент корзины
      */
-    void clearCartWhenOrdering(String login);
+    Cart getCart(String login, Long flowerId);
 
     /**
-     * Метод для очистки корзины пользователя и удаления соответствующих строк из таблицы БД
-     * @param login- login пользователя, корзину которого необходимо очистить
-     * @return булево значение, указывающее была ли очищена корзина
+     * Метод для удаления определенных элементов корзины
+     *
+     * @param carts - список элементов корзины, которые требуется удалить
      */
-    boolean clearCart(String login);
+    void clearCart(List<Cart> carts);
 }

@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" isELIgnored = "false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page session="false" %>
 <html>
 <head>
   <meta charset="utf-8">
@@ -31,6 +32,7 @@
             <p><input type="text" placeholder="last name" name="lastName"/></p>
             <p><input type="text" placeholder="address" name="address"/></p>
             <p><input type="text" placeholder="phone number" name="phoneNumber"/></p>
+            <p id ="registrationMessage" style="color:#ff0000">${registrationMessage}</p>
             <input id="create" type=submit  value="Create account" />
         </form>
         <form method=post action=loginForm>
@@ -41,6 +43,7 @@
         <script>
             $("#username").on('keyup',function() {
                 $("#verificationMessage").text( "" );
+                $("#registrationMessage").text( "" );
                 $("#create").attr("disabled", false);
                 if(this.value) {
                     $.ajax({

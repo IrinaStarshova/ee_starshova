@@ -5,12 +5,17 @@ import java.math.BigDecimal;
 public class CartDTO {
 
     private Long id;
+    private Long flowerId;
     private String flowerName;
     private int quantity;
     private BigDecimal totalPrice;
 
     public Long getId() {
         return id;
+    }
+
+    public Long getFlowerId() {
+        return flowerId;
     }
 
     public String getFlowerName() {
@@ -27,6 +32,10 @@ public class CartDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setFlowerId(Long flowerId) {
+        this.flowerId = flowerId;
     }
 
     public void setFlowerName(String flowerName) {

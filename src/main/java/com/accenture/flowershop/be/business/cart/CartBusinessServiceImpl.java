@@ -5,10 +5,15 @@ import com.accenture.flowershop.be.access.flower.FlowerAccessService;
 import com.accenture.flowershop.be.access.user.UserAccessService;
 import com.accenture.flowershop.be.entity.cart.Cart;
 import com.accenture.flowershop.be.entity.flower.Flower;
+import com.accenture.flowershop.be.entity.user.Customer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
 
 @Service
 public class CartBusinessServiceImpl implements CartBusinessService {
@@ -18,27 +23,39 @@ public class CartBusinessServiceImpl implements CartBusinessService {
     private CartAccessService cartAccessService;
     @Autowired
     private UserAccessService userAccessService;
+    private static final Logger LOG = LoggerFactory.getLogger(CartBusinessService.class);
 
     @Override
-    public boolean addToCart(Long id, int availableQuantity, int quantity, String login) {
-        if(availableQuantity < quantity)
+    @Transactional
+    public boolean addToCart(Long flowerId, int quantity, String login) {
+        Flower flower = flowerAccessService.getFlower(flowerId);
+        Cart cart = cartAccessService.getCart(login, flowerId);
+        if (flower.getQuantity() < ((cart != null) ? quantity + cart.getQuantity() : quantity))
             return false;
-        Flower flower=flowerAccessService.setQuantityInCart(id,quantity);
-        Cart cart=new Cart(flower.getId(), flower.getName(), quantity,
-                flower.getPrice().multiply(new BigDecimal(quantity)));
-        cartAccessService.addCartItem(cart,login);
+        Customer customer = (Customer) userAccessService.getUser(login);
+        BigDecimal totalPrice = flower.getPrice().multiply(new BigDecimal(quantity));
+        if (cart != null) {
+            cart.setQuantity(cart.getQuantity() + quantity);
+            cart.setTotalPrice
+                    (cart.getTotalPrice().add(totalPrice));
+        } else {
+            cart = new Cart(flower.getId(), flower.getName(),
+                    quantity, totalPrice);
+            customer.addCart(cart);
+        }
+        customer.setCartCostWithDiscount(totalPrice);
+        LOG.info("Add cart item to cart of user - {}", customer.getLogin());
         return true;
     }
 
     @Override
-    public List<Cart> getCart(String login) {
-        return cartAccessService.getCarts(login);
-    }
-
-
-    @Override
+    @Transactional
     public void clearCart(String login) {
-        if (cartAccessService.clearCart(login))
-            userAccessService.changeCartCost(login);
+        List<Cart> carts = cartAccessService.getCarts(login);
+        if (!carts.isEmpty()) {
+            cartAccessService.clearCart(carts);
+            Customer customer = (Customer) userAccessService.getUser(login);
+            customer.setCartCost(BigDecimal.ZERO);
+        }
     }
 }

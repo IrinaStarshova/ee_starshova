@@ -1,6 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" isELIgnored = "false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <html>
  <head>
   <meta charset="utf-8">
@@ -20,13 +19,12 @@
 		float: left;
 	   }
 	   .block3 {
-	    width: 520px;
 		padding: 10px;
 		float: right;
 		position: relative;
 	   }
 	    table {
-	       width: 450px;
+	       width: 500px;
            border-collapse: collapse;
         }
         td {
@@ -58,18 +56,16 @@
 				<td>Add to cart</td>
 				</tr>
 
-                <c:forEach items = "${flowers}" var="iterator">
+                <c:forEach items = "${flowers}" var="flower">
 					<form method=post action =cartServlet>
-					<input type="hidden" name="flowerID" value="${iterator.id}"/>
-					<input type="hidden" name="availableQuantity"
-					 value="${iterator.quantity-iterator.quantityInCart}"/>
+					<input type="hidden" name="flowerID" value="${flower.id}"/>
 					<tr>
-					<td>${iterator.name}</td>
-					<td align="center">${iterator.price}</td>
-					<td align="center">${iterator.quantity-iterator.quantityInCart}</td>
+					<td>${flower.name}</td>
+					<td align="center">${flower.price}</td>
+					<td align="center">${flower.quantity}</td>
 					<td align="center"><input type="text" pattern="[1-9]+[0-9]{0,3}"
 					    maxlength="4" size="1"  placeholder="qty" name="quantity" required/>
-					    <input type=submit value="Add to cart"/>
+					    <input type=submit name="addToCart" value="Add to cart"/>
 					</td>
 					</tr>
 					</form>
@@ -88,11 +84,8 @@
             	<input type="search" size = "6" name="priceFrom" pattern="[0-9]{0,}"/>
             	 to:
             	<input type="search"  size = "6" name="priceTo" pattern="[0-9]{0,}"/></td>
-            	<td><p><input type=submit value="Search"/></p>
-            	</form>
-            	<form method=post action ="searchServlet">
-            	    <input type="hidden" name="cancel" value="cancel"/>
-            	<input type=submit value="Cancel"/>
+            	<td><p><input type=submit name="search" value="Search"/></p>
+            	<input type=submit name="cancel" value="Cancel"/>
             	</td></tr>
             	</form>
 			</table>
@@ -100,19 +93,19 @@
 
 		<div class="block3">
 			<h2>Cart</h2>
-			<form method=post action =orderServlet>
-			<table border="1">
+
+			<table style="width:300px;" border="1">
 				<tr bgcolor="#d2d6df" align="center">
 				<td>Flower name</td>
 				<td>Quantity</td>
 				<td>Total price</td>
 				</tr>
 
-				<c:forEach items = "${cart}" var="iterator">
+				<c:forEach items = "${user.carts}" var="cart">
 				    <tr>
-				    <td>${iterator.flowerName}</td>
-				    <td align="center">${iterator.quantity}</td>
-				    <td align="center">${iterator.totalPrice}</td>
+				    <td>${cart.flowerName}</td>
+				    <td align="center">${cart.quantity}</td>
+				    <td align="center">${cart.totalPrice}</td>
 				    </tr>
                 </c:forEach>
                 <c:if test = "${user.cartCost!='0.00'}">
@@ -122,44 +115,73 @@
 
 			</table>
             <p style="color:#ff0000">${orderMessage}</p>
-			<p><input type=submit value="Create order"/></p>
-			</form>
+
+            <form method=post>
+            <p><input type=submit <c:if test = "${user.carts.isEmpty()}"> disabled </c:if>
+                name="clearCart" formaction="cartServlet" value="Clear cart"/>
+            <input type=submit <c:if test = "${user.carts.isEmpty()}"> disabled </c:if>
+                name="createOrder" formaction="orderServlet" value="Create order"/></p>
+            </form>
 
 			<h2>Orders</h2>
             <p style="color:#ff0000">${payMessage}</p>
-			<table style="width:auto" border="1">
+			<table border="1">
 				<tr bgcolor="#d2d6df" align="center">
-				<td style="width:80px;">Order id</td>
-				<td style="width:80px;">Order cost</td>
-				<td style="width:86px;">Creation date</td>
-				<td style="width:86px;">Closing date</td>
-				<td style="width:86px;">Order status</td>
+				<td>Order id</td>
+				<td>Order cost</td>
+				<td>Creation date</td>
+				<td>Closing date</td>
+				<td>Order status</td>
 				</tr>
-                <c:forEach items = "${orders}" var="iterator">
-                    <form method=post action =payServlet>
-                    <input type="hidden" name="orderId" value="${iterator.id}"/>
+                <c:forEach items = "${user.orders}" var="order">
+                    <form method=post>
+                    <input type="hidden" name="orderId" value="${order.id}"/>
 					<tr>
-					<td align="center">${iterator.id}</td>
-					<td align="center">${iterator.cost}</td>
-					<td align="center">${iterator.creationDate}</td>
-					<td align="center">${iterator.closingDate}</td>
-					<td align="center">${iterator.status.toString()}</td>
-					<c:if test = "${iterator.status == 'CREATED'}">
-					    <td style="width:30px;"><input type=submit value="Pay"/></td>
-                    </c:if>
+					<td align="center">${order.id}</td>
+					<td align="center">${order.cost}</td>
+					<td align="center">${order.creationDate}</td>
+					<td align="center">${order.closingDate}</td>
+					<td align="center">${order.status.toString()}</td>
                     </tr>
-					</form>
-                    <tr><td colspan="5"><details><summary>Order details</summary>
+
+                    <tr><td colspan="5"><details><summary>Order details and available actions</summary>
+                    <div>
+                    <div style="float: left;">
+                    <br>
                     <table style="width:auto;">
-                    <c:forEach items = "${iterator.carts}" var="iterator">
+                    <tr><td align="center" colspan="3">Details</td></tr>
+                    <c:forEach items = "${order.carts}" var="cart">
                     	<tr>
-                        <td>${iterator.flowerName} - </td>
-                        <td>${iterator.quantity} pc. - </td>
-                        <td>${iterator.totalPrice}</td>
+                        <td>${cart.flowerName} - </td>
+                        <td>${cart.quantity} pc. - </td>
+                        <td>${cart.totalPrice}</td>
                         </tr>
                     </c:forEach>
                     </table>
+                    </div>
+                    <div style="float: right; position: relative;">
+
+                        <br>
+                        <table style="width:auto;">
+                        <tr><td align="center">Available <br>actions</td></tr>
+                        <c:if test = "${order.status == 'CREATED'}">
+                        <tr><td><input type=submit name="payOrder"
+							formaction="orderServlet" value="Pay"/></td></tr>
+					    <tr><td><input type=submit name="deleteOrder"
+					        formaction="orderServlet" value="Cancel"/></td></tr>
+					    </c:if>
+					    <c:if test = "${order.status == 'PAID'}">
+                        <tr><td><input type=submit name="deleteOrder"
+                            formaction="orderServlet"value="Cancel"/></td></tr>
+                        </c:if>
+                        <c:if test = "${order.status == 'CLOSED'}">
+                        <tr><td align="center"> - </td></tr>
+                        </c:if>
+					    </table>
+                    </div>
+                    </div>
                     </details></td></tr>
+					</form>
 				</c:forEach>
 			</table>
 		</div>

@@ -13,6 +13,10 @@ public class Flower {
     @Column(name="id")
     private Long id;
 
+    @Version
+    @Column(name="version")
+    private Long version;
+
     @Column(name="name")
     private String name;
 
@@ -21,9 +25,6 @@ public class Flower {
 
     @Column(name="quantity")
     private int quantity;
-
-    @Column(name="quantity_in_cart")
-    private int quantityInCart;
 
     public Flower(){}
     public Flower(String name, BigDecimal price, int quantity) {
@@ -50,14 +51,6 @@ public class Flower {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public int getQuantityInCart() {
-        return quantityInCart;
-    }
-
-    public void setQuantityInCart(int quantityInCart) {
-        this.quantityInCart = quantityInCart;
     }
 
     @Override

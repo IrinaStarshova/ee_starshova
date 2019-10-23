@@ -1,10 +1,11 @@
 package com.accenture.flowershop.fe.servlets;
 
 import com.accenture.flowershop.be.business.order.OrderBusinessService;
-import com.accenture.flowershop.fe.mapper.Mapper;
 import com.accenture.flowershop.fe.dto.OrderDTO;
+import com.accenture.flowershop.fe.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(urlPatterns = "/closeServlet")
-public class CloseServlet extends HttpServlet {
+public class CloseOrderServlet extends HttpServlet {
 
     @Autowired
     private OrderBusinessService orderBusinessService;
@@ -30,9 +31,8 @@ public class CloseServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-
         HttpSession session = request.getSession(false);
-        if(session==null)
+        if (session == null)
             request.getRequestDispatcher("/loginFormServlet").forward(request, response);
         else {
             orderBusinessService.closeOrder(Long.parseLong(request.getParameter("orderId")));

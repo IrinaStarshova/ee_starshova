@@ -7,7 +7,7 @@ create sequence flower_seq;
    name varchar(10) not null,
 	price dec(8,2) not null,
 	quantity int(10) not null,
-	quantity_in_cart int(10) default 0
+	version Long default 0
     );
 --------------------------------------------------------
 --  Insert data

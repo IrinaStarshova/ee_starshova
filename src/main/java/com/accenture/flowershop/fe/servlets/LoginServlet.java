@@ -50,8 +50,6 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("user",userDTO);
                 session.setAttribute("flowers",
                         mapper.mapList(flowerBusinessService.getFlowers(), FlowerDTO.class));
-                session.setAttribute("orders",
-                        mapper.mapList(orderBusinessService.getOrders(user.getLogin()), OrderDTO.class));
                 request.getRequestDispatcher("/userPage.jsp").forward(request, response);
             }
         }

@@ -1,6 +1,7 @@
 package com.accenture.flowershop.fe.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class UserDTO {
     private String login;
@@ -12,7 +13,9 @@ public class UserDTO {
     private BigDecimal balance;
     private int discount;
     private BigDecimal cartCost;
-    private boolean admin=false;
+    private boolean admin = false;
+    private List<CartDTO> carts;
+    private List<OrderDTO> orders;
 
     public String getLogin() {
         return login;
@@ -48,6 +51,14 @@ public class UserDTO {
 
     public BigDecimal getCartCost() {
         return cartCost;
+    }
+
+    public List<CartDTO> getCarts() {
+        return carts;
+    }
+
+    public List<OrderDTO> getOrders() {
+        return orders;
     }
 
     public void setLogin(String login) {
@@ -88,6 +99,14 @@ public class UserDTO {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public void setCarts(List<CartDTO> carts) {
+        this.carts = carts;
+    }
+
+    public void setOrders(List<OrderDTO> orders) {
+        this.orders = orders;
     }
 
     public boolean isAdmin() {
