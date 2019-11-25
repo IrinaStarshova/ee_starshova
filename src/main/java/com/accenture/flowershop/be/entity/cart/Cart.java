@@ -1,5 +1,8 @@
 package com.accenture.flowershop.be.entity.cart;
 
+import com.accenture.flowershop.be.entity.flower.Flower;
+import com.accenture.flowershop.be.entity.user.User;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -10,45 +13,43 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
     @SequenceGenerator(name = "seq", sequenceName = "cart_seq", allocationSize = 1)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name="flower_id")
-    private Long flowerId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flower_id")
+    private Flower flower;
 
-    @Column(name="flowerName")
-    private String flowerName;
-
-    @Column(name="quantity")
+    @Column(name = "quantity")
     private int quantity;
 
-    @Column(name="total_price")
+    @Column(name = "total_price")
     private BigDecimal totalPrice;
 
-    @Column(name="login")
-    private String login;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "login")
+    private User customer;
 
-    @Column(name="order_id")
-    private Long orderId;
+    public Cart() {
+    }
 
-    public Cart(){}
-    public Cart(Long flowerId, String flowerName, int quantity, BigDecimal totalPrice) {
-        this.flowerId=flowerId;
-        this.flowerName =flowerName;
-        this.quantity=quantity;
-        this.totalPrice=totalPrice;
+    public Cart(Flower flower, int quantity, BigDecimal totalPrice) {
+        this.flower = flower;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+    }
+
+    public void addFlowers(int quantity, BigDecimal totalPrice) {
+        this.quantity += quantity;
+        this.totalPrice = this.totalPrice.add(totalPrice);
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getFlowerId() {
-        return flowerId;
-    }
-
-    public String getFlowerName() {
-        return flowerName;
+    public Flower getFlower() {
+        return flower;
     }
 
     public BigDecimal getTotalPrice() {
@@ -59,12 +60,12 @@ public class Cart {
         return quantity;
     }
 
-    public void setFlowerId(Long flowerId) {
-        this.flowerId = flowerId;
+    public User getCustomer() {
+        return customer;
     }
 
-    public void setFlowerName(String flowerName) {
-        this.flowerName = flowerName;
+    public void setFlower(Flower flower) {
+        this.flower = flower;
     }
 
     public void setQuantity(int quantity) {
@@ -75,13 +76,16 @@ public class Cart {
         this.totalPrice = totalPrice;
     }
 
-    @Override
-    public String toString() {
-        return "||Name of flower: " + flowerName +
-                " Quantity: " + quantity+
-                " Price: " + totalPrice+
-                " User: "+login+
-                " Order id: "+orderId+"||";
+    public void setCustomer(User customer) {
+        this.customer = customer;
     }
 
+    @Override
+    public String toString() {
+        return "||Name of flower: " + flower.getName() +
+                " Quantity: " + quantity +
+                " Price: " + totalPrice +
+                " User: " + customer.getLogin() +
+                "||";
+    }
 }

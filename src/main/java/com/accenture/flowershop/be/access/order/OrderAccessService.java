@@ -1,8 +1,7 @@
 package com.accenture.flowershop.be.access.order;
 
 import com.accenture.flowershop.be.entity.order.Order;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 /**
  * Интерфейс доступа к базе данных для заказов
@@ -17,12 +16,7 @@ public interface OrderAccessService {
      */
     Order getOrder(Long orderId);
 
-    /**
-     * Метод для получения всех имеющихся заказов
-     *
-     * @return список имеющихся заказов
-     */
-    List<Order> getOrders();
+    Page<Order> getOrders(int pageNumber, int quantity);
 
     /**
      * Метод для удаления заказа

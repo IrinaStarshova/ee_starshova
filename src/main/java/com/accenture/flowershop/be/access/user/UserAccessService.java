@@ -1,7 +1,6 @@
 package com.accenture.flowershop.be.access.user;
 
-import com.accenture.flowershop.be.business.exceptions.UserExistException;
-import com.accenture.flowershop.be.entity.user.Customer;
+import com.accenture.flowershop.be.business.exceptions.CreateUserException;
 import com.accenture.flowershop.be.entity.user.User;
 
 
@@ -18,11 +17,13 @@ public interface UserAccessService {
      */
     User getUser(String login);
 
+    User getCustomer(String login);
+
     /**
      * Метод для добавления нового пользователя
      *
      * @param user - пользователь, которого необходимо добавить
      */
-    void addUser(Customer user) throws UserExistException;
+    void addUser(User user) throws CreateUserException;
 
 }

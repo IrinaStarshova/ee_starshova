@@ -5,8 +5,7 @@ import java.math.BigDecimal;
 public class CartDTO {
 
     private Long id;
-    private Long flowerId;
-    private String flowerName;
+    private FlowerDTO flower;
     private int quantity;
     private BigDecimal totalPrice;
 
@@ -14,12 +13,8 @@ public class CartDTO {
         return id;
     }
 
-    public Long getFlowerId() {
-        return flowerId;
-    }
-
-    public String getFlowerName() {
-        return flowerName;
+    public FlowerDTO getFlower() {
+        return flower;
     }
 
     public int getQuantity() {
@@ -34,12 +29,8 @@ public class CartDTO {
         this.id = id;
     }
 
-    public void setFlowerId(Long flowerId) {
-        this.flowerId = flowerId;
-    }
-
-    public void setFlowerName(String flowerName) {
-        this.flowerName = flowerName;
+    public void setFlower(FlowerDTO flower) {
+        this.flower = flower;
     }
 
     public void setQuantity(int quantity) {

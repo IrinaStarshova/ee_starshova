@@ -3,16 +3,14 @@ package com.accenture.flowershop.be.access.order;
 import com.accenture.flowershop.be.access.repositories.OrderRepository;
 import com.accenture.flowershop.be.entity.order.Order;
 import com.accenture.flowershop.be.entity.order.QOrder;
-import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 /**
  * Класс доступа к базе данных для заказов
@@ -21,21 +19,22 @@ import java.util.List;
 public class OrderAccessServiceImpl implements OrderAccessService {
 
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
     @Autowired
     private OrderRepository repository;
-    private static final Logger LOG = LoggerFactory.getLogger(OrderAccessService.class);
 
     @Override
     public Order getOrder(Long orderId) {
-        return repository.findOne(QOrder.order.id.eq(orderId)).orElse(null);
+        return repository.findOne(QOrder.order.id.eq(orderId))
+                .orElseThrow(() -> new RuntimeException("Order not found by id"));
     }
 
     @Override
-    public List<Order> getOrders() {
-        Sort creationDateAndStatusSort = new Sort(Sort.Direction.ASC
+    public Page<Order> getOrders(int pageNumber, int quantity) {
+        Sort creationDateAndStatusSort = new Sort(Sort.Direction.DESC
                 , "creationDate", "status");
-        return Lists.newArrayList(repository.findAll(QOrder.order.isNotNull(), creationDateAndStatusSort));
+        return repository.findAll(QOrder.order.isNotNull(), PageRequest.of(pageNumber, quantity,
+                creationDateAndStatusSort));
     }
 
     @Override

@@ -1,10 +1,7 @@
 package com.accenture.flowershop.be.business.order;
 
-import com.accenture.flowershop.be.business.exceptions.UnavailableQuantityException;
 import com.accenture.flowershop.be.entity.order.Order;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 /**
  * Интерфейс логики для заказов
@@ -16,16 +13,17 @@ public interface OrderBusinessService {
      *
      * @param login - login пользователя, заказ которого должен быть создан
      */
-    void createNewOrder(String login)
-            throws ObjectOptimisticLockingFailureException,
-            UnavailableQuantityException;
+    void createNewOrder(String login);
+
+    Page<Order> getOrders(int pageNumber, int quantity);
 
     /**
-     * Метод для получения списка заказов
+     * Метод для оплаты заказа
      *
-     * @return список заказов
+     * @param orderId - идентификатор заказа, котороый требуется оплатить
+     * @return булево значение, указывающее произошла ли оплата
      */
-    List<Order> getOrders();
+    boolean payOrder(Long orderId);
 
     /**
      * Метод для закрытия заказа
@@ -39,6 +37,5 @@ public interface OrderBusinessService {
      *
      * @param id - идентификатор заказа, который требуется удалить
      */
-    void deleteOrder(Long id, String login)
-            throws ObjectOptimisticLockingFailureException;
+    void deleteOrder(Long id);
 }

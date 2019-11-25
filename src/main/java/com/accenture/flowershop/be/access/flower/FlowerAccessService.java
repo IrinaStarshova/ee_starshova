@@ -34,4 +34,6 @@ public interface FlowerAccessService {
      * @return сущность цветка с указанным идентификатором
      */
     Flower getFlower(Long id);
+
+    void update();
 }

@@ -69,7 +69,7 @@
         <property name="targetClasses">
         <list>
             <value>com.accenture.flowershop.be.business.jms.DiscountRequestObject</value>
-            <value>com.accenture.flowershop.be.entity.user.Customer</value>
+            <value>com.accenture.flowershop.be.entity.user.User</value>
         </list>
     </property>
     </bean>

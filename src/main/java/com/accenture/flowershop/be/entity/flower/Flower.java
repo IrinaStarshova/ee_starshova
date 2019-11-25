@@ -10,27 +10,37 @@ public class Flower {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
     @SequenceGenerator(name = "seq", sequenceName = "flower_seq", allocationSize = 1)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
     @Version
-    @Column(name="version")
+    @Column(name = "version")
     private Long version;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="price")
+    @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name="quantity")
+    @Column(name = "quantity")
     private int quantity;
 
-    public Flower(){}
+    public Flower() {
+    }
+
     public Flower(String name, BigDecimal price, int quantity) {
-        this.name =name;
-        this.price=price;
-        this.quantity=quantity;
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public void increaseQuantity(int quantity) {
+        this.quantity += quantity;
+    }
+
+    public void decreaseQuantity(int quantity) {
+        this.quantity -= quantity;
     }
 
     public Long getId() {
@@ -49,6 +59,14 @@ public class Flower {
         return quantity;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
@@ -57,7 +75,7 @@ public class Flower {
     public String toString() {
         return "||Name of flower: " + name +
                 " Price: " + price +
-                "Quantity: " + quantity +"||";
+                "Quantity: " + quantity + "||";
     }
 
 }

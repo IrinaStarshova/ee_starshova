@@ -4,5 +4,5 @@ import com.accenture.flowershop.be.entity.flower.Flower;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FlowerRepository extends BaseRepository<Flower,Long> {
+public interface FlowerRepository extends BaseRepository<Flower, Long> {
 }

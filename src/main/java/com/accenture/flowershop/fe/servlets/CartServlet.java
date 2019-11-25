@@ -1,11 +1,7 @@
 package com.accenture.flowershop.fe.servlets;
 
 import com.accenture.flowershop.be.business.cart.CartBusinessService;
-import com.accenture.flowershop.be.business.flower.FlowerBusinessService;
-import com.accenture.flowershop.be.business.user.UserBusinessService;
-import com.accenture.flowershop.fe.dto.FlowerDTO;
 import com.accenture.flowershop.fe.dto.UserDTO;
-import com.accenture.flowershop.fe.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -23,12 +19,7 @@ public class CartServlet extends HttpServlet {
 
     @Autowired
     private CartBusinessService cartBusinessService;
-    @Autowired
-    private FlowerBusinessService flowerBusinessService;
-    @Autowired
-    private UserBusinessService userBusinessService;
-    @Autowired
-    private Mapper mapper;
+    private String message;
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -39,42 +30,29 @@ public class CartServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         HttpSession session = request.getSession(false);
-        if (session == null)
+        if (session == null) {
             request.getRequestDispatcher("/loginFormServlet").forward(request, response);
-        else {
+        } else {
+            message = null;
             String login = ((UserDTO) session.getAttribute("user")).getLogin();
 
-            if (request.getParameter("addToCart") != null)
-                addCartItem(login, request);
+            if (request.getParameter("addToCart") != null) {
+                addCartItem(Long.parseLong(request.getParameter("flowerID")),
+                        Integer.parseInt(request.getParameter("quantity")),
+                        login);
+            }
 
-            if (request.getParameter("clearCart") != null)
+            if (request.getParameter("clearCart") != null) {
                 cartBusinessService.clearCart(login);
-
-            session.setAttribute("user",
-                    mapper.map(userBusinessService.getCustomer(login), UserDTO.class));
-
-            if (session.getAttribute("foundedFlowers") == null)
-                session.setAttribute("flowers",
-                        mapper.mapList(flowerBusinessService.getFlowers(), FlowerDTO.class));
-            else
-                session.setAttribute("flowers",
-                        mapper.mapList
-                                (flowerBusinessService.findFlowers
-                                                ((String) session.getAttribute("nameToSearch"),
-                                                        (String) session.getAttribute("priceFrom"),
-                                                        (String) session.getAttribute("priceTo")),
-                                        FlowerDTO.class));
-
-            request.getRequestDispatcher("/userPage.jsp").forward(request, response);
+            }
+            session.setAttribute("message", message);
+            response.sendRedirect("userFormServlet");
         }
     }
 
-    private void addCartItem(String login, HttpServletRequest request) {
-        Long flowerID = Long.parseLong(request.getParameter("flowerID"));
-        int quantity = Integer.parseInt(request.getParameter("quantity"));
+    private void addCartItem(Long flowerID, int quantity, String login) {
         if (!(cartBusinessService.addToCart(flowerID, quantity, login))) {
-            request.setAttribute("cartMessage",
-                    "Error adding to cart. Pay attention to the available number of flowers!");
+            message = "Error adding to cart. Pay attention to the available number of flowers!";
         }
     }
 }

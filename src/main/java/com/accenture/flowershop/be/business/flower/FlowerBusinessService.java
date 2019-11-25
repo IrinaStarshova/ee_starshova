@@ -1,8 +1,6 @@
 package com.accenture.flowershop.be.business.flower;
 
-import com.accenture.flowershop.be.business.exceptions.UnavailableQuantityException;
 import com.accenture.flowershop.be.entity.flower.Flower;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.util.List;
 
@@ -21,27 +19,25 @@ public interface FlowerBusinessService {
     /**
      * Метод для увеличения значения количества определенного вида цветка
      *
-     * @param id       - идентификатор цветка
+     * @param flower   - идентификатор цветка
      * @param quantity - число, на которое необходимо увеличить количество цветов
      */
-    void increaseQuantityOfFlower(Long id, int quantity)
-            throws ObjectOptimisticLockingFailureException;
+    void increaseQuantityOfFlower(Flower flower, int quantity);
 
     /**
      * Метод для уменьшения значения количества определенного вида цветка
      *
-     * @param id       - идентификатор цветка
+     * @param flower   - идентификатор цветка
      * @param quantity - число, на которое необходимо уменьшить количество цветов
      */
-    void decreaseQuantityOfFlower(Long id, int quantity)
-            throws ObjectOptimisticLockingFailureException, UnavailableQuantityException;
+    void decreaseQuantityOfFlower(Flower flower, int quantity);
 
     /**
      * Метод для увеличения значения количества всех цветов на определенное значение
      *
      * @param count - число, на которое должно быть увеличено количество
      */
-    void increaseQuantityOfAllFlowers(int count) throws ObjectOptimisticLockingFailureException;
+    void increaseQuantityOfAllFlowers(int count);
 
     /**
      * Метод для поиска цветов по имени и диапазону цен

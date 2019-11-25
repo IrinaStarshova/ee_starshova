@@ -1,7 +1,6 @@
 package com.accenture.flowershop.fe.servlets;
 
-import com.accenture.flowershop.be.access.user.UserAccessService;
-import com.accenture.flowershop.be.business.exceptions.UserExistException;
+import com.accenture.flowershop.be.business.exceptions.CreateUserException;
 import com.accenture.flowershop.be.business.user.UserBusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -18,8 +17,6 @@ import java.io.IOException;
 public class RegisterServlet extends HttpServlet {
     @Autowired
     private UserBusinessService userBusinessService;
-    @Autowired
-    private UserAccessService userAccessService;
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -30,7 +27,6 @@ public class RegisterServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         try {
-            String name = request.getParameter("username");
             userBusinessService.createNewUser(request.getParameter("username"),
                     request.getParameter("password"),
                     request.getParameter("firstName"),
@@ -39,7 +35,7 @@ public class RegisterServlet extends HttpServlet {
                     request.getParameter("address"),
                     request.getParameter("phoneNumber"));
             request.getRequestDispatcher("/loginForm.jsp").forward(request, response);
-        } catch (UserExistException e) {
+        } catch (CreateUserException e) {
             request.setAttribute("registrationMessage",
                     e.getMessage());
             request.getRequestDispatcher("/registerForm.jsp").forward(request, response);

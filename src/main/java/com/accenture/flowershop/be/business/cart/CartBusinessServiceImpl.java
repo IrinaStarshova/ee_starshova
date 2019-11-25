@@ -5,7 +5,7 @@ import com.accenture.flowershop.be.access.flower.FlowerAccessService;
 import com.accenture.flowershop.be.access.user.UserAccessService;
 import com.accenture.flowershop.be.entity.cart.Cart;
 import com.accenture.flowershop.be.entity.flower.Flower;
-import com.accenture.flowershop.be.entity.user.Customer;
+import com.accenture.flowershop.be.entity.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +30,16 @@ public class CartBusinessServiceImpl implements CartBusinessService {
     public boolean addToCart(Long flowerId, int quantity, String login) {
         Flower flower = flowerAccessService.getFlower(flowerId);
         Cart cart = cartAccessService.getCart(login, flowerId);
-        if (flower.getQuantity() < ((cart != null) ? quantity + cart.getQuantity() : quantity))
+        if (flower.getQuantity() <
+                ((cart != null) ? quantity + cart.getQuantity() : quantity)) {
             return false;
-        Customer customer = (Customer) userAccessService.getUser(login);
+        }
+        User customer = userAccessService.getCustomer(login);
         BigDecimal totalPrice = flower.getPrice().multiply(new BigDecimal(quantity));
         if (cart != null) {
-            cart.setQuantity(cart.getQuantity() + quantity);
-            cart.setTotalPrice
-                    (cart.getTotalPrice().add(totalPrice));
+            cart.addFlowers(quantity, totalPrice);
         } else {
-            cart = new Cart(flower.getId(), flower.getName(),
-                    quantity, totalPrice);
+            cart = new Cart(flower, quantity, totalPrice);
             customer.addCart(cart);
         }
         customer.setCartCostWithDiscount(totalPrice);
@@ -54,8 +53,7 @@ public class CartBusinessServiceImpl implements CartBusinessService {
         List<Cart> carts = cartAccessService.getCarts(login);
         if (!carts.isEmpty()) {
             cartAccessService.clearCart(carts);
-            Customer customer = (Customer) userAccessService.getUser(login);
-            customer.setCartCost(BigDecimal.ZERO);
+            carts.get(0).getCustomer().nullifyCartCost();
         }
     }
 }

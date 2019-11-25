@@ -31,6 +31,7 @@
             padding: 3px;
         }
 	</style>
+	<script src="http://code.jquery.com/jquery-2.2.4.js" type="text/javascript"></script>
   </head>
 	<body>
 		<div class="block">
@@ -71,13 +72,11 @@
 					</form>
 			   </c:forEach>
 			</table>
-            <p style="color:#ff0000">${cartMessage}</p>
 
 			<table border="1" >
 			    <form method=post action =searchServlet>
             	<tr><td colspan="2" bgcolor="#d2d6df" ><p align="center">Catalog search</p></td></tr>
 				<tr><td>
-            	<p style="color:#ff0000">${searchMessage}</p>
 				Name of flower contains:
             	<input type="search"  name="nameToSearch" pattern="[A-Za-z]{0,}"/><br><br>
             	Price from:
@@ -103,7 +102,7 @@
 
 				<c:forEach items = "${user.carts}" var="cart">
 				    <tr>
-				    <td>${cart.flowerName}</td>
+				    <td>${cart.flower.name}</td>
 				    <td align="center">${cart.quantity}</td>
 				    <td align="center">${cart.totalPrice}</td>
 				    </tr>
@@ -114,7 +113,6 @@
                 </c:if>
 
 			</table>
-            <p style="color:#ff0000">${orderMessage}</p>
 
             <form method=post>
             <p><input type=submit <c:if test = "${user.carts.isEmpty()}"> disabled </c:if>
@@ -124,7 +122,6 @@
             </form>
 
 			<h2>Orders</h2>
-            <p style="color:#ff0000">${payMessage}</p>
 			<table border="1">
 				<tr bgcolor="#d2d6df" align="center">
 				<td>Order id</td>
@@ -139,7 +136,7 @@
 					<tr>
 					<td align="center">${order.id}</td>
 					<td align="center">${order.cost}</td>
-					<td align="center">${order.creationDate}</td>
+					<td align="center">${order.creationDateWithoutTime}</td>
 					<td align="center">${order.closingDate}</td>
 					<td align="center">${order.status.toString()}</td>
                     </tr>
@@ -152,7 +149,7 @@
                     <tr><td align="center" colspan="3">Details</td></tr>
                     <c:forEach items = "${order.carts}" var="cart">
                     	<tr>
-                        <td>${cart.flowerName} - </td>
+                        <td>${cart.flower.name} - </td>
                         <td>${cart.quantity} pc. - </td>
                         <td>${cart.totalPrice}</td>
                         </tr>
@@ -186,5 +183,13 @@
 			</table>
 		</div>
 		</div>
+		<script>
+		    window.onload = showMessage('${message}');
+            function showMessage(message){
+              if(message){
+                alert(String(message));
+              }
+            }
+        </script>
 	</body>
 <html>

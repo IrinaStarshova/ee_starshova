@@ -1,7 +1,6 @@
 package com.accenture.flowershop.be.business.user;
 
-import com.accenture.flowershop.be.business.exceptions.UserExistException;
-import com.accenture.flowershop.be.entity.user.Customer;
+import com.accenture.flowershop.be.business.exceptions.CreateUserException;
 import com.accenture.flowershop.be.entity.user.User;
 
 /**
@@ -23,7 +22,7 @@ public interface UserBusinessService {
     void createNewUser(String username, String password,
                        String firstName, String patronymic,
                        String lastName, String address, String phoneNumber)
-            throws UserExistException;
+            throws CreateUserException;
 
     /**
      * Метод для определения существует ли пользователь с определенным логином
@@ -43,15 +42,6 @@ public interface UserBusinessService {
     User userLogin(String login, String password);
 
     /**
-     * Метод для оплаты заказа
-     *
-     * @param login   - login пользователя, заказ которого должен быть оплачен
-     * @param orderId - идентификатор заказа, котороый требуется оплатить
-     * @return булево значение, указывающее произошла ли оплата
-     */
-    boolean payOrder(String login, Long orderId);
-
-    /**
      * Метод для изменения размера скидки пользователя
      *
      * @param login    - login пользователя
@@ -65,5 +55,5 @@ public interface UserBusinessService {
      * @param login - login пользователя
      * @return сущность пользователя
      */
-    Customer getCustomer(String login);
+    User getCustomer(String login);
 }

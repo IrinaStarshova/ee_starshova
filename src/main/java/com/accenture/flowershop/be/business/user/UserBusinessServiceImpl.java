@@ -1,14 +1,12 @@
 package com.accenture.flowershop.be.business.user;
 
-import com.accenture.flowershop.be.access.order.OrderAccessService;
 import com.accenture.flowershop.be.access.user.UserAccessService;
 import com.accenture.flowershop.be.business.UserMarshallingService;
-import com.accenture.flowershop.be.business.exceptions.UserExistException;
+import com.accenture.flowershop.be.business.exceptions.CreateUserException;
 import com.accenture.flowershop.be.business.jms.MessageService;
+import com.accenture.flowershop.be.entity.cart.Cart;
 import com.accenture.flowershop.be.entity.order.Order;
-import com.accenture.flowershop.be.entity.user.Customer;
 import com.accenture.flowershop.be.entity.user.User;
-import com.accenture.flowershop.fe.enums.order.OrderStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class UserBusinessServiceImpl implements UserBusinessService {
@@ -25,11 +23,10 @@ public class UserBusinessServiceImpl implements UserBusinessService {
     @Autowired
     private UserAccessService userAccessService;
     @Autowired
-    private OrderAccessService orderAccessService;
-    @Autowired
     private UserMarshallingService userMarshallingService;
     @Autowired
     private MessageService messageService;
+
     private static final Logger LOG = LoggerFactory.getLogger(UserBusinessService.class);
 
     @Override
@@ -37,19 +34,20 @@ public class UserBusinessServiceImpl implements UserBusinessService {
                               String firstName, String patronymic,
                               String lastName, String address,
                               String phoneNumber)
-            throws UserExistException {
-        Customer customer = new Customer(username, password,
+            throws CreateUserException {
+        User customer = new User(username, password,
                 firstName, patronymic, lastName, address,
-                phoneNumber, Customer.BALANCE, Customer.DISCOUNT);
+                phoneNumber, User.BALANCE, User.DISCOUNT);
         try {
             userAccessService.addUser(customer);
+            LOG.info("User with login: \"{}\" was created", username);
             userMarshallingService.convertFromUserToXML(customer, customer.getLogin());
             messageService.sendCustomerXML(customer.getLogin());
-            LOG.info("User with login: {} was created", username);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Unexpected error!", e);
         } catch (DataIntegrityViolationException e) {
-            throw new UserExistException();
+            LOG.error("Unexpected error!", e);
+            throw new CreateUserException(CreateUserException.INTERNAL_ERROR);
         }
     }
 
@@ -62,64 +60,53 @@ public class UserBusinessServiceImpl implements UserBusinessService {
     @Transactional
     public User userLogin(String login, String password) {
         User user = userAccessService.getUser(login);
-        if (user == null)
+        if (user == null) {
             return null;
-        if (!user.getPassword().equals(password))
+        }
+        if (!user.getPassword().equals(password)) {
             return null;
+        }
         if (!user.isAdmin()) {
-            initializeCarts((Customer) user);
-            initializeOrders((Customer) user);
+            initializeCarts(user.getCarts());
+            initializeOrders(user.getOrders());
         }
         return user;
     }
 
     @Override
     @Transactional
-    public boolean payOrder(String login, Long orderId) {
-        Customer customer = (Customer) userAccessService.getUser(login);
-        Order order = orderAccessService.getOrder(orderId);
-        BigDecimal orderCost = order.getCost();
-        BigDecimal userBalance = customer.getBalance();
-        if (orderCost.compareTo(userBalance) > 0)
-            return false;
-        customer.setBalance(userBalance.subtract(orderCost));
-        order.setStatus(OrderStatus.PAID);
-        return true;
-    }
-
-    @Override
-    @Transactional
     public void changeDiscount(String login, int discount) {
-        Customer customer = (Customer) userAccessService.getUser(login);
-        if (customer != null)
-            customer.setDiscount(discount);
+        User user = userAccessService.getUser(login);
+        if (user != null) {
+            user.setDiscount(discount);
+            LOG.info("Discount of user \"{}\" changed", login);
+        }
     }
 
     @Override
     @Transactional
-    public Customer getCustomer(String login) {
-        Customer customer = (Customer) userAccessService.getUser(login);
-        initializeCarts(customer);
-        initializeOrders(customer);
+    public User getCustomer(String login) {
+        User customer = userAccessService.getCustomer(login);
+        initializeCarts(customer.getCarts());
+        initializeOrders(customer.getOrders());
         return customer;
     }
 
     /**
      * Метод для загрузки корзины пользователя
      *
-     * @param customer - сущность пользователя
+     * @param carts - список элементов корзины
      */
-    private void initializeCarts(Customer customer) {
-        customer.getCarts().size();
+    private void initializeCarts(List<Cart> carts) {
+        carts.forEach(cart -> cart.getFlower().getName());
     }
 
     /**
      * Метод для загрузки заказов пользователя
      *
-     * @param customer - сущность пользователя
+     * @param orders - список заказов
      */
-    private void initializeOrders(Customer customer) {
-        for (Order o : customer.getOrders())
-            o.getCarts().size();
+    private void initializeOrders(List<Order> orders) {
+        orders.forEach(order -> initializeCarts(order.getCarts()));
     }
 }

@@ -1,17 +1,19 @@
 package com.accenture.flowershop.be.entity.order;
 
 import com.accenture.flowershop.be.entity.cart.Cart;
+import com.accenture.flowershop.be.entity.user.User;
 import com.accenture.flowershop.fe.enums.order.OrderStatus;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Entity(name = "Order")
-@Table(name = "order_")
+@Table(name = "shop_order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
@@ -23,7 +25,7 @@ public class Order {
     private BigDecimal cost;
 
     @Column(name = "creation_date")
-    private Date creationDate;
+    private Timestamp creationDate;
 
     @Column(name = "closing_date")
     private Date closingDate;
@@ -32,8 +34,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @Column(name = "login")
-    private String login;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "login")
+    private User customer;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
@@ -42,7 +45,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(BigDecimal cost, Date creationDate,
+    public Order(BigDecimal cost, Timestamp creationDate,
                  OrderStatus status, List<Cart> carts) {
         this.cost = cost;
         this.creationDate = creationDate;
@@ -50,12 +53,21 @@ public class Order {
         this.carts = carts;
     }
 
-    public void addCart(Cart cart) {
-        carts.add(cart);
+    public void close() {
+        closingDate = new Date(System.currentTimeMillis());
+        status = OrderStatus.CLOSED;
     }
 
-    public void setCarts(List<Cart> carts) {
-        this.carts = carts;
+    public void pay() {
+        status = OrderStatus.PAID;
+    }
+
+    public boolean isPaid() {
+        return status == OrderStatus.PAID;
+    }
+
+    public boolean isClosed() {
+        return status == OrderStatus.CLOSED;
     }
 
     public Long getId() {
@@ -66,7 +78,7 @@ public class Order {
         return cost;
     }
 
-    public Date getCreationDate() {
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
@@ -82,6 +94,10 @@ public class Order {
         return carts;
     }
 
+    public User getCustomer() {
+        return customer;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -90,7 +106,7 @@ public class Order {
         this.cost = cost;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(Timestamp creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -100,6 +116,14 @@ public class Order {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public void setCarts(List<Cart> carts) {
+        this.carts = carts;
+    }
+
+    public void setCustomer(User customer) {
+        this.customer = customer;
     }
 
     @Override

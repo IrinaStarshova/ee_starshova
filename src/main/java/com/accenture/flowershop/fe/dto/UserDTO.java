@@ -1,11 +1,14 @@
 package com.accenture.flowershop.fe.dto;
 
+import com.accenture.flowershop.fe.enums.user.UserRole;
+
 import java.math.BigDecimal;
 import java.util.List;
 
 public class UserDTO {
     private String login;
     private String firstName;
+    private UserRole role;
     private String patronymic;
     private String lastName;
     private String address;
@@ -13,12 +16,15 @@ public class UserDTO {
     private BigDecimal balance;
     private int discount;
     private BigDecimal cartCost;
-    private boolean admin = false;
     private List<CartDTO> carts;
     private List<OrderDTO> orders;
 
     public String getLogin() {
         return login;
+    }
+
+    public UserRole getRole() {
+        return role;
     }
 
     public String getFirstName() {
@@ -65,6 +71,10 @@ public class UserDTO {
         this.login = login;
     }
 
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -97,10 +107,6 @@ public class UserDTO {
         this.cartCost = cartCost;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
-
     public void setCarts(List<CartDTO> carts) {
         this.carts = carts;
     }
@@ -110,6 +116,6 @@ public class UserDTO {
     }
 
     public boolean isAdmin() {
-        return admin;
+        return role.equals(UserRole.ADMIN);
     }
 }

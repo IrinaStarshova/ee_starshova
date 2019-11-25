@@ -1,8 +1,7 @@
 package com.accenture.flowershop.be.access.user;
 
 import com.accenture.flowershop.be.access.repositories.UserRepository;
-import com.accenture.flowershop.be.business.exceptions.UserExistException;
-import com.accenture.flowershop.be.entity.user.Customer;
+import com.accenture.flowershop.be.business.exceptions.CreateUserException;
 import com.accenture.flowershop.be.entity.user.QUser;
 import com.accenture.flowershop.be.entity.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +30,19 @@ public class UserAccessServiceImpl implements UserAccessService {
 
     @Override
     @Transactional
-    public void addUser(Customer user)
-            throws UserExistException {
+    public User getCustomer(String login) {
+        return repository.findOne(QUser.user.login.eq(login))
+                .orElseThrow(() -> new RuntimeException("Customer not found by login"));
+    }
+
+    @Override
+    @Transactional
+    public void addUser(User user)
+            throws CreateUserException {
         if (getUser(user.getLogin()) == null) {
             entityManager.persist(user);
         } else {
-            throw new UserExistException();
+            throw new CreateUserException(CreateUserException.USER_EXIST_MESSAGE);
         }
     }
 }

@@ -1,0 +1,184 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Flower shop</title>
+        <style type="text/css">
+    .block {
+      margin: 0 auto;
+      width: 800px;
+    }
+
+    .block1 {
+      padding: 10px;
+      background: #d2d6df;
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    tr {
+      text-align: center;
+    }
+
+    td {
+      text-align: center;
+      width: 120px;
+      padding: 3px;
+    }
+        </style>
+        <script src="http://code.jquery.com/jquery-2.2.4.js" type="text/javascript"></script>
+    </head>
+
+    <body>
+        <input type="hidden" id="pageNumber"/>
+        <div class="block">
+            <div class="block1">
+                <h2 align="center">Flower shop. Admin page</h2>
+            </div>
+            <form method=post action=loginForm>
+                <p align="right"><input type=submit value="Log out"/></p>
+            </form>
+            <div align="center" class="mainDiv">
+                <h2>Orders</h2> Number of orders shown:
+                <input type="radio" name="radio" class="radio" value="10" checked/> 10
+                <input type="radio" name="radio" class="radio" value="20"/> 20
+                <input type="radio" name="radio" class="radio" value="30"/> 30 <br><br>
+                <table border="1" id="ordersTable">
+                    <tr bgcolor="#d2d6df">
+                        <td>Order id</td>
+                        <td>Order cost</td>
+                        <td>Creation date</td>
+                        <td>Closing date</td>
+                        <td>Order status</td>
+                    </tr>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+                <div id="pagesButtons" style="padding:10px;"></div>
+            </div>
+        </div>
+        <script>
+    document.onload = getOrders($('[type="radio"]:checked').val(), 0);
+
+    $('[type="radio"]').on('change', function() { getOrders(this.value, 0) });
+
+    $('#pagesButtons').on('click', 'button', function() {
+      $("#pageNumber").val(this.value - 1);
+      getOrders($('[type="radio"]:checked').val(), this.value - 1);
+      $('body').animate({ scrollTop: 0 }, 500);
+    });
+
+    $('#ordersTable').on('click', 'button', function() {
+      var pageNumber = $("#pageNumber").val()
+      $.ajax({
+        url: "http://localhost:8080/flowershop/rest/order/close",
+        type: "POST",
+        data: JSON.stringify(this.value),
+        contentType: "application/json; charset=utf-8",
+        success: function() {
+          getOrders($('[type="radio"]:checked').val(), new Number(pageNumber))
+        },
+        error: function() {
+          alert("Unknown error!");
+        }
+      });
+    });
+
+    function getOrders(quantity, pageNumber) {
+      $.ajax({
+        url: "http://localhost:8080/flowershop/rest/order/"+pageNumber+"/"+quantity,
+        success: function(orders) {
+          createOrdersTable(orders.content);
+          createPagesButtons(orders.totalPages, pageNumber);
+
+        },
+        error: function() {
+          alert("Unknown error!");
+        }
+      });
+    }
+
+    function createOrdersTable(orders) {
+      var tbody = document.createElement('tbody');
+      tbody.id = "tableBody";
+      for (let order of orders) {
+        var tr = tbody.insertRow();
+        tr.insertCell().innerHTML = order.id;
+        tr.insertCell().innerHTML = order.cost;
+        var creationDate = new Date(order.creationDate);
+        tr.insertCell().innerHTML = formatDate(creationDate);
+        var cell = tr.insertCell();
+        var closingDate = order.closingDate;
+        if (closingDate != null) {
+          closingDate = new Date(closingDate);
+          cell.innerHTML = formatDate(closingDate);
+        }
+        var status = order.status.toLowerCase();
+        tr.insertCell().innerHTML = status;
+
+        if (status == 'paid') {
+          let button = document.createElement('button');
+          button.innerHTML = "Close";
+          button.value = order.id;
+          let cell = tr.insertCell();
+          cell.style.width = "30px";
+          cell.appendChild(button);
+        }
+        tr = tbody.insertRow();
+        var cell = tr.insertCell();
+        cell.colSpan = 5;
+        var details = document.createElement("details");
+        var summary = document.createElement("summary");
+        summary.innerHTML = 'Order details';
+        summary.style = "text-align: left;";
+        details.appendChild(summary);
+        var table = document.createElement('table');
+
+        for (let cart of order.carts) {
+          let tr = table.insertRow();
+          let cell = tr.insertCell();
+          cell.style.width = "auto";
+          cell.innerHTML = cart.flower.name + ' - ';
+          cell = tr.insertCell();
+          cell.style.width = "auto";
+          cell.innerHTML = cart.quantity + ' pc. - ';
+          cell = tr.insertCell();
+          cell.style.width = "auto";
+          cell.innerHTML = cart.totalPrice;
+        }
+        details.appendChild(table);
+        cell.appendChild(details);
+      }
+      var tBody = document.getElementById("tableBody");
+      tBody.replaceWith(tbody);
+    }
+
+    function createPagesButtons(quantity, pageNumber) {
+      $("#pageNumber").val(pageNumber);
+      let div = document.getElementById("pagesButtons");
+      div.innerHTML = "";
+      if (quantity > 1) {
+        for (let i = 1; i < quantity + 1; i++) {
+          let button = document.createElement('button');
+          button.innerHTML = i;
+          button.value = i;
+          if (i == pageNumber + 1) {
+            button.style.background = "#d2d6df";
+            button.disabled = true;
+          }
+          div.appendChild(button);
+        }
+      }
+    }
+
+    function formatDate(date) {
+      var day = date.getDate();
+      if (day < 10) {day = '0' + day;}
+      var month = date.getMonth() + 1;
+      if (month < 10) {month = '0' + month;}
+      return date.getFullYear() + "-" + month + "-" + day;
+    }
+        </script>
+    </body>
+</html>

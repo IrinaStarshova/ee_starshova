@@ -9,7 +9,6 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -30,25 +29,10 @@ public class FlowerBusinessServiceImpl implements FlowerBusinessService {
     @Retryable(value = {ObjectOptimisticLockingFailureException.class},
             maxAttempts = 5,
             backoff = @Backoff(delay = 50))
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void increaseQuantityOfFlower(Long id, int quantity)
-            throws ObjectOptimisticLockingFailureException {
-        Flower flower = flowerAccessService.getFlower(id);
-        flower.setQuantity(flower.getQuantity() + quantity);
-    }
-
-    @Override
-    @Retryable(value = {ObjectOptimisticLockingFailureException.class},
-            maxAttempts = 5,
-            backoff = @Backoff(delay = 50))
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void decreaseQuantityOfFlower(Long id, int quantity)
-            throws ObjectOptimisticLockingFailureException,
-            UnavailableQuantityException {
-        Flower flower = flowerAccessService.getFlower(id);
-        if (flower.getQuantity() < quantity)
-            throw new UnavailableQuantityException();
-        flower.setQuantity(flower.getQuantity() - quantity);
+    @Transactional
+    public void increaseQuantityOfFlower(Flower flower, int quantity) {
+        flower.increaseQuantity(quantity);
+        flowerAccessService.update();
     }
 
     @Override
@@ -56,11 +40,21 @@ public class FlowerBusinessServiceImpl implements FlowerBusinessService {
             maxAttempts = 5,
             backoff = @Backoff(delay = 50))
     @Transactional
-    public void increaseQuantityOfAllFlowers(int count)
-            throws ObjectOptimisticLockingFailureException {
-        for (Flower f : flowerAccessService.getFlowers()) {
-            f.setQuantity(f.getQuantity() + count);
+    public void decreaseQuantityOfFlower(Flower flower, int quantity){
+        if (flower.getQuantity() < quantity) {
+            throw new UnavailableQuantityException();
         }
+        flower.decreaseQuantity(quantity);
+        flowerAccessService.update();
+    }
+
+    @Override
+    @Retryable(value = {ObjectOptimisticLockingFailureException.class},
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 50))
+    @Transactional
+    public void increaseQuantityOfAllFlowers(int count) {
+        flowerAccessService.getFlowers().forEach(flower -> flower.increaseQuantity(count));
     }
 
     @Override
